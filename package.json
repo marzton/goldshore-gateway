@@ -37,12 +37,16 @@
     "vite-tsconfig-paths": "5.1.4",
     "wrangler": "4.21.x"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "react-router build",
     "cf-typegen": "wrangler types",
     "deploy": "npm run build && wrangler deploy",
     "dev": "react-router dev",
     "preview": "npm run build && vite preview",
-    "typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
+    "typecheck": "npm run cf-typegen && react-router typegen && tsc -b",
+    "postinstall": "npm install --workspaces --if-present"
   }
 }
