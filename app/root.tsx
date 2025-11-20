@@ -41,8 +41,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+import AdminDashboardLayout from './components/layouts/AdminDashboardLayout';
+
 export default function App() {
-  return <Outlet />;
+  return (
+    <AdminDashboardLayout>
+      <Outlet />
+    </AdminDashboardLayout>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
