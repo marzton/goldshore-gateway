@@ -39,6 +39,19 @@ id = "GATEWAY_KV_ID"
 binding = "AI"
 
 [vars]
+APP_NAME = "goldshore-gateway"
+APP_ENV = "production"
+
+# ----------------------------------
+# PREVIEW ENV
+# ----------------------------------
+[env.preview]
+routes = [
+  { pattern = "gateway-preview.goldshore.org/*", zone_name = "goldshore.org" }
+]
+
+[env.preview.vars]
+APP_ENV = "preview"
 # Cloudflare Access (AUTH)
 CF_ACCESS_ISS = "https://goldshore.cloudflareaccess.com"
 CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
