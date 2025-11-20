@@ -1,93 +1,41 @@
-import { verifyHmac } from "./hmac";
-
-interface Env {
-  GATEWAY_SERVICE_NAME: string;
-  DEFAULT_MODEL: string;
-  JWT_HS256_KEY: string;
-  OPENAI_API_KEY: string;
-  ANTHROPIC_API_KEY: string;
-  GOOGLE_API_KEY: string;
-  GOOGLE_GEMINI_KEY: string;
-  GROQ_API_KEY: string;
-  GOOGLE_JULES_KEY: string;
-  AISTUDIO_WYWRDTRVLR_TOKEN: string;
-
-  ACCESS_AUDIENCE: string;
-  CLOUDFLARE_JWKS_URI: string;
-
-  KV_SESSIONS: KVNamespace;
-  KV_CACHE: KVNamespace;
-  R2_PUBLIC: R2Bucket;
-  R2_LOGS: R2Bucket;
-  QUEUE_EVENTS: Queue;
-  QUEUE_DLQ: Queue;
-  D1_DATABASE: D1Database;
-}
+import { corsHeaders } from "./middleware/cors";
+import { validateAccess } from "./middleware/access";
+import { routeRequest } from "./router";
+import { Env } from "./env";
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const url = new URL(request.url);
+  async fetch(req: Request, env: Env): Promise<Response> {
 
-    if (url.pathname === "/health") {
+    const origin = req.headers.get("Origin") || "";
+
+    // OPTIONS preflight
+    if (req.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders(origin, env)
+      });
+    }
+
+    // Validate Access token
+    const access = await validateAccess(req, env);
+    if (!access.ok) {
       return new Response(
-        JSON.stringify({
-          ok: true,
-          service: env.GATEWAY_SERVICE_NAME,
-          defaultModel: env.DEFAULT_MODEL
-        }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        JSON.stringify({ error: access.error }),
+        { status: 401 }
       );
     }
 
-    if (url.pathname === "/v1/chat/completions") {
-      return handleChatCompletion(request, env, ctx);
-    }
+    // Route to API
+    const response = await routeRequest(req, env);
 
-    return new Response("Not found", { status: 404 });
-  }
+    // Attach CORS to response
+    const headers = new Headers(response.headers);
+    const cors = corsHeaders(origin, env);
+    for (const [k, v] of Object.entries(cors)) headers.set(k, v);
+
+    return new Response(response.body, {
+      status: response.status,
+      headers
+    });
+  },
 };
-
-async function handleChatCompletion(
-  request: Request,
-  env: Env,
-  ctx: ExecutionContext
-): Promise<Response> {
-  if (request.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
-  }
-
-  const signature = request.headers.get("x-gs-hmac") || "";
-  const bodyText = await request.text();
-
-  const ok = await verifyHmac(bodyText, signature, env.JWT_HS256_KEY);
-  if (!ok) {
-    return new Response("Invalid signature", { status: 401 });
-  }
-
-  const payload = JSON.parse(bodyText || "{}");
-  const model = payload.model || env.DEFAULT_MODEL;
-
-  // Simple router example. Replace with your real AI routing logic.
-  if (model.startsWith("gpt-") && env.OPENAI_API_KEY) {
-    // Fan out to OpenAI through standard API
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "authorization": `Bearer ${env.OPENAI_API_KEY}`,
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        model,
-        messages: payload.messages || []
-      })
-    });
-    return new Response(resp.body, {
-      status: resp.status,
-      headers: { "content-type": "application/json" }
-    });
-  }
-
-  return new Response("Model not supported or provider not configured", {
-    status: 400
-  });
-}
