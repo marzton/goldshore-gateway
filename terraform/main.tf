@@ -51,18 +51,6 @@ resource "cloudflare_pages_project" "goldshore_admin" {
       environment_variables = {
         CF_ACCESS_ISS      = "https://goldshore.cloudflareaccess.com"
         CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
-        VITE_PUBLIC_API    = "https://api.goldshore.org"
-        VITE_PUBLIC_GATEWAY = "https://gateway.goldshore.org"
-        VITE_APP_ENV       = "production"
-      }
-    }
-    preview {
-      environment_variables = {
-        CF_ACCESS_ISS      = "https://goldshore.cloudflareaccess.com"
-        CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
-        VITE_PUBLIC_API    = "https://api-preview.goldshore.org"
-        VITE_PUBLIC_GATEWAY = "https://gateway-preview.goldshore.org"
-        VITE_APP_ENV       = "preview"
       }
     }
   }
