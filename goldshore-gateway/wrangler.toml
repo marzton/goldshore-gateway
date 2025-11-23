@@ -2,6 +2,33 @@ name = "goldshore-gateway"
 main = "src/index.ts"
 compatibility_date = "2023-11-21"
 
+# ----------------------------------
+# SERVICE BINDINGS
+# goldshore-api is usually called from the gateway
+# ----------------------------------
+[[services]]
+binding = "api"
+service = "goldshore-api"
+environment = "production"
+
+# Optional: call admin or other workers later
+# [[services]]
+# binding = "admin"
+# service = "goldshore-admin"
+
+# ----------------------------------
+# KV (routing tables, tokens, users)
+# ----------------------------------
+[[kv_namespaces]]
+binding = "GATEWAY_STATE"
+id = "GATEWAY_KV_ID"
+
+# ----------------------------------
+# AI (optional)
+# ----------------------------------
+[[ai]]
+binding = "AI"
+
 [vars]
 API_ENVIRONMENT = "production"
 AI_MODEL = "gpt-4o"
