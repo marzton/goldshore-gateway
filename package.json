@@ -54,6 +54,6 @@
     "dev": "react-router dev",
     "preview": "npm run build && vite preview",
     "typecheck": "npm run cf-typegen && react-router typegen && tsc -b",
-    "postinstall": "npm install --workspaces --if-present"
+    "postinstall": "npm install --workspaces --if-present --ignore-scripts"
   }
 }
