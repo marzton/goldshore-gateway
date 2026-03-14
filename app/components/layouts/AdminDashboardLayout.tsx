@@ -36,8 +36,12 @@ const TopNav: React.FC = () => (
 );
 
 const AdminDashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Runtime public asset path (served from /public in Vite/React Router builds).
+  // Keep this as an absolute URL instead of importing it through the module graph.
+  const dashboardBackgroundUrl = '/penrose-fractal.svg';
+
   return (
-    <div className="flex h-screen bg-gsDark text-white font-body" style={{ background: 'url(/penrose-fractal.svg) no-repeat center center fixed', backgroundSize: 'cover' }}>
+    <div className="flex h-screen bg-gsDark text-white font-body" style={{ background: `url(${dashboardBackgroundUrl}) no-repeat center center fixed`, backgroundSize: 'cover' }}>
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <TopNav />
