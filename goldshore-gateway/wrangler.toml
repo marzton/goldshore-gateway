@@ -1,69 +1,35 @@
-name = "goldshore-gateway"
+name = "gs-gateway"
 main = "src/index.ts"
-compatibility_date = "2025-01-20"
-
-account_id = "f77de112d2019e5456a3198a8bb50bd2"
-
-# ----------------------------------
-# GATEWAY ROUTES (PROD)
-# ----------------------------------
-routes = [
-  { pattern = "gateway.goldshore.org/*", zone_id = "d86cd71f0d1c8b8e08928a32e0c95ae3" }
-]
-
-# ----------------------------------
-# SERVICE BINDINGS
-# goldshore-api is usually called from the gateway
-# ----------------------------------
-[[services]]
-binding = "api"
-service = "goldshore-api"
-environment = "production"
-
-# Optional: call admin or other workers later
-# [[services]]
-# binding = "admin"
-# service = "goldshore-admin"
-
-# ----------------------------------
-# KV (routing tables, tokens, users)
-# ----------------------------------
-[[kv_namespaces]]
-binding = "GATEWAY_STATE"
-id = "GATEWAY_KV_ID"
-
-# ----------------------------------
-# AI (optional)
-# ----------------------------------
-[[ai]]
-binding = "AI"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
-APP_NAME = "goldshore-gateway"
-APP_ENV = "production"
+ENVIRONMENT = "production"
+AIPROXYSIGNING_KEY = "SECRET_TOKEN" # Managed via 'wrangler secret'
 
-# ----------------------------------
-# PREVIEW ENV
-# ----------------------------------
-[env.preview]
-routes = [
-  { pattern = "gateway-preview.goldshore.org/*", zone_name = "goldshore.org" }
-]
+# Native AI Gateway Binding
+[ai]
+binding = "AI"
 
-[env.preview.vars]
-APP_ENV = "preview"
-# Cloudflare Access (AUTH)
-CF_ACCESS_ISS = "https://goldshore.cloudflareaccess.com"
-CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
-CF_ACCESS_AUD = "3ae67260bc738a42d4eeaf1525fd4941bf220375e5325c2cb76dbe653a2f8c25"
+# Service Bindings (Zero-Latency Internal Routing)
+[[services]]
+binding = "AGENT"
+service = "gs-api"
 
-# Routing
-API_BASE = "https://api.goldshore.org"
-ADMIN_APP = "https://admin.goldshore.org"
-PUBLIC_HOME = "https://goldshore.org"
+[[services]]
+binding = "MAIL"
+service = "gs-mail"
 
-# CORS
-CORS_ALLOWED = "[\"https://goldshore.org\",\"https://admin.goldshore.org\",\"https://preview.goldshore.org\",\"http://localhost:5173\"]"
+# Persistence & Config
+[[d1_databases]]
+binding = "DB"
+database_name = "goldshore"
+database_id = "2b7cb4cd-f9b3-4107-9f03-ae76e99f0c14"
 
-# Logging
-LOG_LEVEL = "info"
+[[kv_namespaces]]
+binding = "GS_CONFIG"
+id = "5f13370575784c9dacff522121104cb3"
+
+# Observability
+[version_metadata]
+binding = "VERSION"
