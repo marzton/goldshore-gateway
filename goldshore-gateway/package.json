@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev"
+    "deploy": "wrangler deploy --config ./worker.wrangler.toml",
+    "dev": "wrangler dev --config ./worker.wrangler.toml",
+    "start": "wrangler dev --config ./worker.wrangler.toml"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250425.0",
