@@ -1,3 +1,27 @@
+/**
+ * goldshore-gateway | src/index.ts
+ * 2026 Production Standard
+ */
+
+interface Env {
+  // Primary Bindings
+  AI: any; // Using 'any' for standard Workers AI; refined by wrangler types
+  DB: D1Database;
+  GS_CONFIG: KVNamespace;
+
+  // Service Bindings (Worker-to-Worker)
+  AGENT: { fetch: typeof fetch };
+  MAIL: { fetch: typeof fetch };
+
+  // Metadata & Vars
+  VERSION: { id: string; tag: string };
+  ENVIRONMENT: string;
+}
+
+export default {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+
 import { corsHeaders } from "./middleware/cors";
 import { validateAccess } from "./middleware/access";
 import { router } from "./router";
