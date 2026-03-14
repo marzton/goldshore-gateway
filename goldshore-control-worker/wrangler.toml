@@ -1,0 +1,24 @@
+name = "goldshore-control-worker"
+main = "src/index.ts"
+compatibility_date = "2023-11-21"
+
+[vars]
+API_ENVIRONMENT = "production"
+GOLD_SHORE_VERSION = "1.0.0"
+
+# This worker should be private and only accessible via service bindings or Cloudflare Access.
+# No routes are defined by default.
+
+[[kv_namespaces]]
+binding = "CONTROL_STORE"
+id = "xxxx" # Add the ID for a dedicated control worker KV
+
+[[services]]
+binding = "api"
+service = "goldshore-api"
+environment = "production"
+
+[[services]]
+binding = "gateway"
+service = "goldshore-gateway"
+environment = "production"
