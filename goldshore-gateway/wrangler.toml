@@ -1,27 +1,20 @@
-name = "goldshore-gateway"
+name = "gs-gateway"
 main = "src/index.ts"
-compatibility_date = "2023-11-21"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
 
-# ----------------------------------
-# SERVICE BINDINGS
-# goldshore-api is usually called from the gateway
-# ----------------------------------
+[vars]
+ENVIRONMENT = "production"
+AIPROXYSIGNING_KEY = "SECRET_TOKEN" # Managed via 'wrangler secret'
+
+# Native AI Gateway Binding
+[ai]
+binding = "AI"
+
+# Service Bindings (Zero-Latency Internal Routing)
 [[services]]
-binding = "api"
-service = "goldshore-api"
-environment = "production"
-
-# Optional: call admin or other workers later
-# [[services]]
-# binding = "admin"
-# service = "goldshore-admin"
-
-# ----------------------------------
-# KV (routing tables, tokens, users)
-# ----------------------------------
-[[kv_namespaces]]
-binding = "GATEWAY_STATE"
-id = "GATEWAY_KV_ID"
+binding = "AGENT"
+service = "gs-api"
 
 # ----------------------------------
 # AI (optional)
@@ -69,3 +62,20 @@ API_ENVIRONMENT = "preview"
 binding = "api"
 service = "goldshore-api"
 environment = "preview"
+[[services]]
+binding = "MAIL"
+service = "gs-mail"
+
+# Persistence & Config
+[[d1_databases]]
+binding = "DB"
+database_name = "goldshore"
+database_id = "2b7cb4cd-f9b3-4107-9f03-ae76e99f0c14"
+
+[[kv_namespaces]]
+binding = "GS_CONFIG"
+id = "5f13370575784c9dacff522121104cb3"
+
+# Observability
+[version_metadata]
+binding = "VERSION"
