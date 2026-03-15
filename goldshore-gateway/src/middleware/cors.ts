@@ -1,4 +1,4 @@
-import { Env } from "../env";
+import type { Env } from "../env.ts";
 
 export function corsHeaders(origin: string, env: Env) {
   const allowed = JSON.parse(env.CORS_ALLOWED);
