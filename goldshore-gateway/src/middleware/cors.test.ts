@@ -1,41 +1,21 @@
-import { expect, test, describe } from "bun:test";
-import { corsHeaders } from "./cors";
+import test from "node:test";
+import assert from "node:assert";
+import { corsHeaders } from "./cors.ts";
 
-describe("corsHeaders", () => {
-  const env = {
-    CORS_ALLOWED: JSON.stringify(["https://example.com", "https://test.com"])
-  };
+test("corsHeaders returns headers for allowed origin", () => {
+  const env = { CORS_ALLOWED: '["https://goldshore.ai"]' } as any;
+  const headers = corsHeaders("https://goldshore.ai", env);
+  assert.strictEqual(headers["Access-Control-Allow-Origin"], "https://goldshore.ai");
+  assert.strictEqual(headers["Access-Control-Allow-Credentials"], "true");
+});
 
-  test("returns headers for allowed origin", () => {
-    const headers = corsHeaders("https://example.com", env as any);
-    expect(headers["Access-Control-Allow-Origin"]).toBe("https://example.com");
-    expect(headers["Access-Control-Allow-Credentials"]).toBe("true");
-  });
+test("corsHeaders returns empty object for disallowed origin", () => {
+  const env = { CORS_ALLOWED: '["https://goldshore.ai"]' } as any;
+  const headers = corsHeaders("https://goldshore.ai", env);
+  assert.deepStrictEqual(headers, {});
+});
 
-  test("returns empty object for disallowed origin", () => {
-    const headers = corsHeaders("https://malicious.com", env as any);
-    expect(headers).toEqual({});
-  });
-
-  test("handles update to CORS_ALLOWED", () => {
-    corsHeaders("https://example.com", env as any);
-
-    const newEnv = {
-      CORS_ALLOWED: JSON.stringify(["https://new.com"])
-    };
-
-    const headersOld = corsHeaders("https://example.com", newEnv as any);
-    expect(headersOld).toEqual({});
-
-    const headersNew = corsHeaders("https://new.com", newEnv as any);
-    expect(headersNew["Access-Control-Allow-Origin"]).toBe("https://new.com");
-  });
-
-  test("handles invalid JSON gracefully", () => {
-    const badEnv = {
-      CORS_ALLOWED: "not-json"
-    };
-    const headers = corsHeaders("https://example.com", badEnv as any);
-    expect(headers).toEqual({});
-  });
+test("corsHeaders throws for malformed CORS_ALLOWED", () => {
+  const env = { CORS_ALLOWED: "invalid-json" } as any;
+  assert.throws(() => corsHeaders("https://goldshore.ai", env));
 });

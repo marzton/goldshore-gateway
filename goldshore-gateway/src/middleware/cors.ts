@@ -1,4 +1,4 @@
-import { Env } from "../env";
+import type { Env } from "../env.ts";
 
 let lastCorsAllowed: string | null = null;
 let cachedAllowed: string[] = [];
