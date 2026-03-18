@@ -1,6 +1,6 @@
 {
-  "name": "goldshore-gateway",
-  "description": "A modern full-stack template powered by Cloudflare Workers, using Hono for backend APIs, React Router for frontend routing, and shadcn/ui for beautiful, accessible components styled with Tailwind CSS",
+  "name": "goldshore-admin",
+  "description": "Goldshore admin dashboard app built with React Router, Vite, and Cloudflare Workers; the standalone gateway worker lives in goldshore-gateway/.",
   "private": true,
   "type": "module",
   "cloudflare": {
