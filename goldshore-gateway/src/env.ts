@@ -22,7 +22,6 @@ export interface Env {
 
   // Service Bindings (Worker-to-Worker)
   AGENT: { fetch: typeof fetch };
-  MAIL: { fetch: typeof fetch };
 
   // Metadata
   VERSION: { id: string; tag: string };

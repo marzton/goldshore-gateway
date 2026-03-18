@@ -73,17 +73,7 @@ export default {
       }
     }
 
-    // 3. Mail Integration Stub
-    // High-priority system alerts can be triggered here
-    if (url.pathname === "/_sys/mail-test") {
-      // return await env.MAIL.fetch(request);
-      return new Response("Mail stub active", {
-        status: 200,
-        headers: corsHeaders(origin, env),
-      });
-    }
-
-    // 4. Router Fallback
+    // 3. Router Fallback
     // For anything not handled above, try itty-router
     const response = await router.handle(request, env);
     if (response) {
@@ -97,7 +87,7 @@ export default {
       });
     }
 
-    // 5. Default Fallback
+    // 4. Default Fallback
     const fallbackResponse = new Response("Gold Shore Gateway | 2026", { status: 404 });
     const headers = {
       ...Object.fromEntries(fallbackResponse.headers),
