@@ -76,7 +76,6 @@ export default {
     // 3. Mail Integration Stub
     // High-priority system alerts can be triggered here
     if (url.pathname === "/_sys/mail-test") {
-      // return await env.MAIL.fetch(request);
       return new Response("Mail stub active", {
         status: 200,
         headers: corsHeaders(origin, env),
