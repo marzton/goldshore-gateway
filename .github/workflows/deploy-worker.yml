@@ -5,9 +5,7 @@ on:
     branches: [ main ]
     paths:
       - "goldshore-gateway/**"
-      - "wrangler.toml"
-      - "AI/**"
-      - "AGENT_SCOPE.yaml"
+      - "goldshore-gateway/AGENT_SCOPE.yaml"
       - ".github/workflows/deploy-worker.yml"
   workflow_dispatch:
 

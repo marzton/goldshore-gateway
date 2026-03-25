@@ -1,32 +1,77 @@
-repository: goldshore-admin
+repository: goldshore-platform
+subproject: goldshore-admin-app
+scope_file_role: repository-root
+purpose: >
+  Governance for the admin dashboard, shared repository configuration, and
+  infrastructure files that live at the repository root. This file is not the
+  authority for the gateway worker under goldshore-gateway/.
+
 description: >
-  Admin cockpit dashboard. Private authenticated UI. Uses cockpit components,
-  applet modules, neon/titanium/alcantara themes, and business workflows.
+  Admin cockpit dashboard plus shared configs, packages, workers, and terraform
+  used from the repository root.
 
 domain: https://admin.goldshore.org
 cloudflare_project: goldshore-admin
 
+applies_to_paths:
+  - app/**
+  - public/**
+  - packages/**
+  - workers/**
+  - terraform/**
+  - .github/**
+  - AGENT_GLOBAL_RULES.md
+  - AGENT_SCOPE.yaml
+  - AI_AGENT_CONFIG.yaml
+  - README.md
+  - package.json
+  - package-lock.json
+  - react-router.config.ts
+  - setup_bindings.sh
+  - tailwind.config.ts
+  - tsconfig*.json
+  - vite.config.ts
+  - worker-configuration.d.ts
+  - wrangler.jsonc
+
+automation_readers:
+  agents:
+    - Repository-level agent bootstrap for files outside nested scopes.
+    - Human reviewers validating admin-app or shared-root changes.
+  ci:
+    - .github/workflows/agent-governance.yml
+    - .github/workflows/pages-ci.yml
+    - .github/workflows/scope-check.yml for non-gateway paths
+
 scope:
   allowed:
-    - src/dashboard/**
-    - src/components/**
-    - src/routes/**
+    - app/**
     - public/**
-    - cockpit theme files
-    - AI/INSTRUCTIONS/**
-    - tokens from packages/theme
-  forbidden:
-    - ../goldshore-web/**
-    - ../goldshore-api/**
-    - ../goldshore-gateway/**
+    - packages/**
+    - workers/**
     - terraform/**
-    - dns configs
+    - .github/**
+    - AGENT_GLOBAL_RULES.md
+    - AGENT_SCOPE.yaml
+    - AI_AGENT_CONFIG.yaml
+    - README.md
+    - package.json
+    - package-lock.json
+    - react-router.config.ts
+    - setup_bindings.sh
+    - tailwind.config.ts
+    - tsconfig*.json
+    - vite.config.ts
+    - worker-configuration.d.ts
+    - wrangler.jsonc
+  forbidden:
+    - goldshore-gateway/**
 
 dangerous_operations:
   disallowed:
-    - modifying public website content
-    - altering API contract
-    - touching gateway router configuration
+    - modifying gateway worker code from the repository-root scope
+    - altering API contracts owned by nested services without switching scope
+    - deleting shared infrastructure without explicit review
 
 agent_behavior:
   respond_only_within_scope: true
