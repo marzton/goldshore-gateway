@@ -53,6 +53,7 @@ resource "cloudflare_pages_project" "goldshore_admin" {
         CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
         VITE_PUBLIC_API    = "https://api.goldshore.org"
         VITE_PUBLIC_GATEWAY = "https://gateway.goldshore.org"
+        VITE_CONTROL_WORKER_URL = "https://goldshore-control-worker.goldshore.workers.dev"
         VITE_APP_ENV       = "production"
       }
     }
@@ -62,6 +63,7 @@ resource "cloudflare_pages_project" "goldshore_admin" {
         CF_ACCESS_JWKS_URL = "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
         VITE_PUBLIC_API    = "https://api-preview.goldshore.org"
         VITE_PUBLIC_GATEWAY = "https://gateway-preview.goldshore.org"
+        VITE_CONTROL_WORKER_URL = "https://goldshore-control-worker-preview.goldshore.workers.dev"
         VITE_APP_ENV       = "preview"
       }
     }
