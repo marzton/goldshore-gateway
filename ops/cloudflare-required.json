@@ -1,0 +1,16 @@
+{
+  "zone_name": "goldshore.ai",
+  "required_dns": [
+    "gw.goldshore.ai",
+    "gateway.goldshore.ai"
+  ],
+  "required_routes": [
+    "gw.goldshore.ai/*",
+    "gateway.goldshore.ai/*"
+  ],
+  "forbidden_routes": [
+    "goldshore.ai/*",
+    "www.goldshore.ai/*"
+  ],
+  "required_kv_namespaces": []
+}
