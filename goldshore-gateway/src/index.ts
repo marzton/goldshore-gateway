@@ -201,7 +201,7 @@ export default {
       });
     }
 
-    // 5. Default Fallback
+    // 4. Default Fallback
     const fallbackResponse = new Response("Gold Shore Gateway | 2026", { status: 404 });
     const headers = {
       ...Object.fromEntries(fallbackResponse.headers),
