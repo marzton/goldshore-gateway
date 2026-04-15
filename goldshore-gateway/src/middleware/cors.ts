@@ -1,12 +1,13 @@
 import type { Env } from "../env.ts";
 
 let lastCorsAllowed: string | null = null;
-let cachedAllowed: string[] = [];
+let cachedAllowed: Set<string> = new Set();
 
 export function corsHeaders(origin: string, env: Env) {
   if (env.CORS_ALLOWED !== lastCorsAllowed) {
     try {
-      cachedAllowed = JSON.parse(env.CORS_ALLOWED);
+      const allowed = JSON.parse(env.CORS_ALLOWED);
+      cachedAllowed = new Set(Array.isArray(allowed) ? allowed : []);
       lastCorsAllowed = env.CORS_ALLOWED;
     } catch (e) {
       console.error("Failed to parse CORS_ALLOWED:", e);
@@ -14,7 +15,7 @@ export function corsHeaders(origin: string, env: Env) {
     }
   }
 
-  if (!cachedAllowed.includes(origin)) return {};
+  if (!cachedAllowed.has(origin)) return {};
 
   return {
     "Access-Control-Allow-Origin": origin,
