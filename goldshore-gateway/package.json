@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy --config ./worker.wrangler.toml",
-    "dev": "wrangler dev --config ./worker.wrangler.toml",
-    "start": "wrangler dev --config ./worker.wrangler.toml"
+    "deploy": "sh -c 'CFG=${WRANGLER_CONFIG:-$(if [ -f ./worker.wrangler.toml ]; then echo ./worker.wrangler.toml; else echo ./wrangler.toml; fi)}; wrangler deploy --config \"$CFG\"'",
+    "dev": "sh -c 'CFG=${WRANGLER_CONFIG:-$(if [ -f ./worker.wrangler.toml ]; then echo ./worker.wrangler.toml; else echo ./wrangler.toml; fi)}; wrangler dev --config \"$CFG\"'",
+    "start": "sh -c 'CFG=${WRANGLER_CONFIG:-$(if [ -f ./worker.wrangler.toml ]; then echo ./worker.wrangler.toml; else echo ./wrangler.toml; fi)}; wrangler dev --config \"$CFG\"'"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250425.0",
