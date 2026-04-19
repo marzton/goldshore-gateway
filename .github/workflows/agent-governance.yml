@@ -19,10 +19,8 @@ jobs:
           echo "Checking required governance files..."
           REQUIRED_FILES=(
             "AGENT_SCOPE.yaml"
-            "goldshore-gateway/AGENT_SCOPE.yaml"
             "AGENT_GLOBAL_RULES.md"
             "AI_AGENT_CONFIG.yaml"
-            ".github/scripts/validate_agent_scope.py"
           )
 
           for f in "${REQUIRED_FILES[@]}"; do
@@ -44,12 +42,10 @@ jobs:
 
       - name: Enforce Scope Rule Presence
         run: |
-          for scope_file in AGENT_SCOPE.yaml goldshore-gateway/AGENT_SCOPE.yaml; do
-            if ! grep -q "respond_only_within_scope" "$scope_file"; then
-              echo "::error file=$scope_file::Scope rules missing in $scope_file"
-              exit 1
-            fi
-          done
+          if ! grep -q "respond_only_within_scope" AGENT_SCOPE.yaml; then
+            echo "::error::Scope rules missing in AGENT_SCOPE.yaml"
+            exit 1
+          fi
           echo "Scope rules validated."
 
       - name: Enforce Global Rule Loading

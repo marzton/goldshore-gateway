@@ -1,3 +1,0 @@
-# Reduce recurring merge conflicts in generated lockfiles
-package-lock.json merge=ours
-goldshore-gateway/package-lock.json merge=ours

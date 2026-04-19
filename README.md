@@ -1,58 +1,49 @@
-# Goldshore monorepo layout
+# Hono + React Router + Vite + ShadCN UI on Cloudflare Workers
 
-This repository currently contains **two distinct JavaScript projects** that happen to live side by side:
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/react-router-hono-fullstack-template)
+![Build modern full-stack apps with Hono, React Router, and ShadCN UI on Cloudflare Workers](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/24c5a7dd-e1e3-43a9-b912-d78d9a4293bc/public)
 
-- **Repository root (`./`)**: the Goldshore admin dashboard built with React Router, Vite, and Cloudflare Workers.
-- **`goldshore-gateway/`**: the standalone gateway Cloudflare Worker that has its own `package.json`, `package-lock.json`, and `wrangler.toml`.
+<!-- dash-content-start -->
 
-## Canonical execution model
+A modern full-stack template powered by [Cloudflare Workers](https://workers.cloudflare.com/), using [Hono](https://hono.dev/) for backend APIs, [React Router](https://reactrouter.com/) for frontend routing, and [shadcn/ui](https://ui.shadcn.com/) for beautiful, accessible components styled with [Tailwind CSS](https://tailwindcss.com/).
 
-Use each package from its own directory instead of assuming the whole repository is a single Node project:
+Built with the [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/) for optimized static asset delivery and seamless local development. React is configured in single-page app (SPA) mode via Workers.
 
-### Root app (`./`)
+A perfect starting point for building interactive, styled, and edge-deployed SPAs with minimal configuration.
 
-Use the root package for the admin dashboard and Pages-style build checks.
+## Features
 
-```bash
-npm ci
-npm run build
-npm run dev
-```
+- ⚡ Full-stack app on Cloudflare Workers
+- 🔁 Hono for backend API endpoints
+- 🧭 React Router for client-side routing
+- 🎨 ShadCN UI with Tailwind CSS for components and styling
+- 🧱 File-based route separation
+- 🚀 Zero-config Vite build for Workers
+- 🛠️ Automatically deploys with Wrangler
+- 🔎 Built-in Observability to monitor your Worker
+<!-- dash-content-end -->
 
-Relevant files include `package.json`, `react-router.config.ts`, `vite.config.ts`, `wrangler.jsonc`, `app/`, `public/`, `workers/`, and `packages/env/`.
+## Tech Stack
 
-### Gateway worker (`./goldshore-gateway`)
+- **Frontend**: React + React Router + ShadCN UI
+  - SPA architecture powered by React Router
+  - Includes accessible, themeable UI from ShadCN
+  - Styled with utility-first Tailwind CSS
+  - Built and optimized with Vite
 
-Use the nested package for the gateway worker only.
+- **Backend**: Hono on Cloudflare Workers
+  - API routes defined and handled via Hono in `/api/*`
+  - Supports REST-like endpoints, CORS, and middleware
 
-```bash
-cd goldshore-gateway
-npm ci
-npm run deploy
-npm run dev
-```
-
-## Agent Scope Governance
-
-This repository contains two agent scope files on purpose:
-
-- `AGENT_SCOPE.yaml` governs the admin dashboard, shared repository configuration, and repo-level CI at the repository root.
-- `goldshore-gateway/AGENT_SCOPE.yaml` governs the nested Cloudflare Worker project under `goldshore-gateway/`.
-
-Automation is intentionally split so admin-app rules are not applied to gateway-worker code:
-
-- `.github/workflows/pages-ci.yml` and the repo-wide governance checks read the repository-root `AGENT_SCOPE.yaml`.
-- `.github/workflows/deploy-worker.yml` and the gateway branch of `.github/workflows/scope-check.yml` read `goldshore-gateway/AGENT_SCOPE.yaml`.
-- Agents should load the root scope first and then the nearest nested scope for the files they touch.
+- **Deployment**: Cloudflare Workers via Wrangler
+  - Vite plugin auto-bundles frontend and backend together
+  - Deployed worldwide on Cloudflare’s edge network
 
 ## Resources
-Relevant files include `goldshore-gateway/package.json`, `goldshore-gateway/package-lock.json`, `goldshore-gateway/wrangler.toml`, and `goldshore-gateway/src/`.
 
-## Workflow targeting
-
-The GitHub workflows have been split to follow that same model explicitly:
-
-- `.github/workflows/pages-ci.yml` installs dependencies and builds the **root app**.
-- `.github/workflows/deploy-worker.yml` installs dependencies and deploys the **nested gateway worker** from `goldshore-gateway/`.
-
-That separation avoids accidental cross-project installs, incorrect path filters, and deploying the wrong package when only one project changed.
+- 🧩 [Hono on Cloudflare Workers](https://hono.dev/docs/getting-started/cloudflare-workers)
+- 📦 [Vite Plugin for Cloudflare](https://developers.cloudflare.com/workers/vite-plugin/)
+- 🛠 [Wrangler CLI reference](https://developers.cloudflare.com/workers/wrangler/)
+- 🎨 [shadcn/ui](https://ui.shadcn.com)
+- 💨 [Tailwind CSS Documentation](https://tailwindcss.com/)
+- 🔀 [React Router Docs](https://reactrouter.com/)
