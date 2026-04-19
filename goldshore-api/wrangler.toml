@@ -1,0 +1,41 @@
+name = "goldshore-api"
+main = "src/index.ts"
+compatibility_date = "2023-11-21"
+
+[vars]
+API_ENVIRONMENT = "production"
+DB_NAME = "goldshore-db"
+KV_NAME = "goldshore-api-kv"
+AI_MODEL = "gpt-4o"
+GOLD_SHORE_VERSION = "1.0.0"
+
+[triggers]
+crons = []
+
+[routes]
+"api.goldshore.org/*" = { custom_domain = true, "production" }
+
+[[kv_namespaces]]
+binding = "STORE"
+id = "xxxx"
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "goldshore-assets"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "goldshore-db"
+database_id = "xxxx"
+
+[[ai]]
+binding = "AI"
+
+[env.preview]
+name = "goldshore-api-preview"
+
+[env.preview.vars]
+API_ENVIRONMENT = "preview"
+
+[env.preview.routes]
+"api-preview.goldshore.org/*" = { custom_domain = true, "preview" }

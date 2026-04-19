@@ -16,10 +16,6 @@ binding = "AI"
 binding = "AGENT"
 service = "gs-api"
 
-[[services]]
-binding = "MAIL"
-service = "gs-mail"
-
 # Persistence & Config
 [[d1_databases]]
 binding = "DB"
