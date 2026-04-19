@@ -1,19 +1,13 @@
 {
-  "name": "goldshore-gateway",
+  "name": "goldshore-control-worker",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev",
     "test": "node --experimental-strip-types --test src/**/*.test.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250425.0",
-    "itty-router": "^5.0.22",
-    "jose": "^5.4.0",
-    "typescript": "^5.0.4",
-    "wrangler": "^4.80.0"
+    "typescript": "^5.8.3"
   }
 }

@@ -8,17 +8,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Block forbidden directories
+      - name: Validate changed paths against the applicable scope file
         run: |
-          FORBIDDEN=$(grep -oP '(?<=forbidden:).*' AGENT_SCOPE.yaml || true)
-          CHANGED=$(git diff --name-only origin/main...HEAD)
+          git fetch origin main --depth=1
+          mapfile -t CHANGED < <(git diff --name-only origin/main...HEAD)
 
-          for path in $FORBIDDEN; do
-            if echo "$CHANGED" | grep -q "$path"; then
-              echo "::error::Modification in forbidden path: $path"
-              exit 1
+          ROOT_PATHS=()
+          GATEWAY_PATHS=()
+
+          for path in "${CHANGED[@]}"; do
+            [ -z "$path" ] && continue
+            if [[ "$path" == goldshore-gateway/* ]]; then
+              GATEWAY_PATHS+=("$path")
+            else
+              ROOT_PATHS+=("$path")
             fi
           done
+
+          if [ ${#ROOT_PATHS[@]} -gt 0 ]; then
+            python3 .github/scripts/validate_agent_scope.py AGENT_SCOPE.yaml "${ROOT_PATHS[@]}"
+          fi
+
+          if [ ${#GATEWAY_PATHS[@]} -gt 0 ]; then
+            python3 .github/scripts/validate_agent_scope.py goldshore-gateway/AGENT_SCOPE.yaml "${GATEWAY_PATHS[@]}"
+          fi
 
           echo "Scope check passed."

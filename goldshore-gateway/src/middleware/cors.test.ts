@@ -11,11 +11,12 @@ test("corsHeaders returns headers for allowed origin", () => {
 
 test("corsHeaders returns empty object for disallowed origin", () => {
   const env = { CORS_ALLOWED: '["https://goldshore.ai"]' } as any;
-  const headers = corsHeaders("https://goldshore.ai", env);
+  const headers = corsHeaders("https://other-origin.ai", env);
   assert.deepStrictEqual(headers, {});
 });
 
-test("corsHeaders throws for malformed CORS_ALLOWED", () => {
+test("corsHeaders returns empty object for malformed CORS_ALLOWED", () => {
   const env = { CORS_ALLOWED: "invalid-json" } as any;
-  assert.throws(() => corsHeaders("https://goldshore.ai", env));
+  const headers = corsHeaders("https://goldshore.ai", env);
+  assert.deepStrictEqual(headers, {});
 });
