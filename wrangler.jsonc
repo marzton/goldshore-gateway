@@ -1,46 +1,58 @@
-/**
- * For more details on how to configure Wrangler, refer to:
- * https://developers.cloudflare.com/workers/wrangler/configuration/
- */ {
-  "$schema": "node_modules/wrangler/config-schema.json",
+// goldshore-gateway — rename target for gs-platform
+// Serves: gw.goldshore.ai
+// Current script name: gs-platform (deploy with new name after staging verification)
+{
   "name": "goldshore-gateway",
-  "compatibility_date": "2025-10-08",
-  "main": "./workers/app.ts",
-  "vars": {
-    "VALUE_FROM_CLOUDFLARE": "Hello from Hono/CF"
-  },
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "head_sampling_rate": 1
   },
-  /**
-   * Smart Placement
-   * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
-   */
-  // "placement": { "mode": "smart" },
-  /**
-   * Bindings
-   * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-   * databases, object storage, AI inference, real-time communication and more.
-   * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-   */
-  /**
-   * Environment Variables
-   * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-   */
-  // "vars": { "MY_VARIABLE": "production_value" },
-  /**
-   * Note: Use secrets to store sensitive data.
-   * https://developers.cloudflare.com/workers/configuration/secrets/
-   */
-  /**
-   * Static Assets
-   * https://developers.cloudflare.com/workers/static-assets/binding/
-   */
-  // "assets": { "directory": "./public/", "binding": "ASSETS" },
-  /**
-   * Service Bindings (communicate between multiple Workers)
-   * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
-   */
-  // "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
-  "upload_source_maps": true
+  "vars": {
+    "ENV": "production",
+    "API_ORIGIN": "https://api.goldshore.ai"
+  },
+  // Secrets (set via: wrangler secret put <NAME> --name goldshore-gateway)
+  // CLOUDFLARE_ACCESS_AUDIENCE
+  // GATEWAY_AUTH_TOKEN
+  "kv_namespaces": [
+    {
+      // GATEWAY_KV — audit log storage for integration requests
+      "binding": "GATEWAY_KV",
+      "id": "d0b889d0ba314b42892f5b959356ceda"  // KV_SESSIONS reused; create dedicated ns if volume grows
+    },
+    {
+      "binding": "GS_CONFIG",
+      "id": "5f13370575784c9dacff522121104cb3"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "PLATFORM_DB",
+      "database_name": "gs_platform_db",
+      "database_id": "9703574e-adb7-481e-8d98-96f8ce5f8a90"
+    },
+    {
+      "binding": "AUDIT_DB",
+      "database_name": "gs_audit_db",
+      "database_id": "1ae71d76-188f-481b-91d9-db2d39013f68"
+    }
+  ],
+  "services": [
+    {
+      // Service binding to agent — used for agent.goldshore.ai proxy
+      "binding": "AGENT",
+      "service": "goldshore-agent"  // update from gs-agent after rename
+    },
+    {
+      // Service binding to API — used for /api/* proxy
+      "binding": "API",
+      "service": "goldshore-api"    // update from gs-api after rename
+    }
+  ],
+  "routes": [
+    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" }
+  ]
 }
