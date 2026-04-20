@@ -7,10 +7,12 @@ router.all("/v1/*", (req, env: Env) => {
   const url = new URL(req.url);
 
   // Security Fix: Normalize and validate the path to prevent SSRF via path traversal.
-  // We ensure it does not contain '..' or other dangerous sequences.
+  // We use decodeURIComponent to handle encoded traversal sequences like %2e%2e.
+  // We ensure it does not contain '..' after decoding.
   // We also ensure it still starts with /v1/ after normalization by the URL constructor.
   const path = url.pathname;
-  if (path.includes("..") || path.includes("%2e%2e") || !path.startsWith("/v1/")) {
+  const decodedPath = decodeURIComponent(path);
+  if (decodedPath.includes("..") || !path.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
   }
 
