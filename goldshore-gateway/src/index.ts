@@ -155,15 +155,15 @@ export default {
           });
         }
 
+        const headers = withCorrelationHeaders(apiResponse.headers, requestId);
+        const cors = corsHeaders(origin, env);
+        for (const [key, value] of Object.entries(cors)) {
+          headers.set(key, value);
+        }
+
         return new Response(apiResponse.body, {
           status: apiResponse.status,
-          headers: withCorrelationHeaders(
-            {
-              ...Object.fromEntries(apiResponse.headers),
-              ...corsHeaders(origin, env),
-            },
-            requestId,
-          ),
+          headers,
         });
       } catch (error) {
         const { failureType, reason } = classifyAgentException(error);
@@ -191,10 +191,11 @@ export default {
     // For anything not handled above, try itty-router
     const response = await router.handle(request, env);
     if (response) {
-      const headers = {
-        ...Object.fromEntries(response.headers),
-        ...corsHeaders(origin, env),
-      };
+      const headers = new Headers(response.headers);
+      const cors = corsHeaders(origin, env);
+      for (const [key, value] of Object.entries(cors)) {
+        headers.set(key, value);
+      }
       return new Response(response.body, {
         status: response.status,
         headers,
@@ -202,14 +203,9 @@ export default {
     }
 
     // 4. Default Fallback
-    const fallbackResponse = new Response("Gold Shore Gateway | 2026", { status: 404 });
-    const headers = {
-      ...Object.fromEntries(fallbackResponse.headers),
-      ...corsHeaders(origin, env),
-    };
-    return new Response(fallbackResponse.body, {
-      status: fallbackResponse.status,
-      headers,
+    return new Response("Gold Shore Gateway | 2026", {
+      status: 404,
+      headers: corsHeaders(origin, env),
     });
   },
 };
