@@ -1,7 +1,7 @@
 // This file contains the API integration layer for the Gold Shore Control Worker.
 // It provides a set of functions for the admin dashboard to interact with the control plane.
 
-const CONTROL_WORKER_URL = (import.meta.env?.VITE_CONTROL_WORKER_URL) || 'https://goldshore-control-worker.goldshore.workers.dev';
+const CONTROL_WORKER_URL = import.meta.env?.VITE_CONTROL_WORKER_URL;
 
 interface ControlStatus {
   status: string;
