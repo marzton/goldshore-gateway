@@ -11,7 +11,13 @@ router.all("/v1/*", (req, env: Env) => {
   // We ensure it does not contain '..' after decoding.
   // We also ensure it still starts with /v1/ after normalization by the URL constructor.
   const path = url.pathname;
-  const decodedPath = decodeURIComponent(path);
+  let decodedPath: string;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    return new Response("Invalid path", { status: 400 });
+  }
+
   if (decodedPath.includes("..") || !path.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
   }
