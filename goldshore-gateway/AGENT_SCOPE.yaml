@@ -1,28 +1,57 @@
-repository: goldshore-gateway
+repository: goldshore-platform
+subproject: goldshore-gateway-worker
+scope_file_role: nested-subproject
+inherits_from: ../AGENT_SCOPE.yaml
+purpose: >
+  Governance for the gateway worker implementation only. This nested scope
+  overrides the repository-root scope for files under goldshore-gateway/ so
+  admin-app restrictions do not apply to gateway code.
+
 description: >
-  Unified Worker Gateway. Handles routing, authentication, CORS, JWT,
-  SCIM, OAuth, admin protection, analytics ingestion.
+  Unified Worker Gateway. Handles routing, authentication, CORS, JWT, SCIM,
+  OAuth, admin protection, and analytics ingestion.
 
 cloudflare_worker: goldshore-gateway
 domain: https://gateway.goldshore.org
 
+applies_to_paths:
+  - goldshore-gateway/src/**
+  - goldshore-gateway/package.json
+  - goldshore-gateway/package-lock.json
+  - goldshore-gateway/tsconfig.json
+  - goldshore-gateway/wrangler.toml
+  - goldshore-gateway/AGENT_SCOPE.yaml
+  - goldshore-gateway/.github/**
+
+automation_readers:
+  agents:
+    - Agents working on files under goldshore-gateway/ after loading ../AGENT_SCOPE.yaml.
+    - Human reviewers validating worker-only changes.
+  ci:
+    - .github/workflows/deploy-worker.yml
+    - .github/workflows/scope-check.yml for gateway paths
+    - .github/workflows/agent-governance.yml validates this file exists and declares scope rules
+
 scope:
   allowed:
-    - routes/**
-    - middleware/**
-    - router.ts
-    - auth/**
-    - wrangler.toml
+    - goldshore-gateway/src/**
+    - goldshore-gateway/package.json
+    - goldshore-gateway/package-lock.json
+    - goldshore-gateway/tsconfig.json
+    - goldshore-gateway/wrangler.toml
+    - goldshore-gateway/AGENT_SCOPE.yaml
+    - goldshore-gateway/.github/**
   forbidden:
-    - ../goldshore-web/**
-    - ../goldshore-admin/**
-    - css or UI additions
-    - front-end modifications
+    - app/**
+    - public/**
+    - packages/**
+    - terraform/**
+    - workers/**
 
 dangerous_operations:
   disallowed:
-    - altering API endpoint schemas
-    - modifying the UI system
+    - altering API endpoint schemas without explicit confirmation
+    - modifying admin UI files from the gateway scope
     - deleting worker bindings without user confirmation
 
 agent_behavior:

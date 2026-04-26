@@ -14,11 +14,7 @@ binding = "AI"
 # Service Bindings (Zero-Latency Internal Routing)
 [[services]]
 binding = "AGENT"
-service = "gs-api"
-
-[[services]]
-binding = "MAIL"
-service = "gs-mail"
+service = "goldshore-api"
 
 # Persistence & Config
 [[d1_databases]]
