@@ -27,9 +27,12 @@ jobs:
           import json, os, urllib.request
           def cf_get(url):
               req = urllib.request.Request(url, headers={'Authorization': f"Bearer {os.environ['CLOUDFLARE_API_TOKEN']}", 'Content-Type': 'application/json'})
-              with urllib.request.urlopen(req) as resp:
-                  data = json.loads(resp.read().decode())
-              if not data.get('success'):
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      data = json.loads(resp.read().decode())
+              except Exception as e:
+                  raise SystemExit(f"Request failed for {url}: {e}")
+              if not isinstance(data, dict) or not data.get('success'):
                   raise SystemExit(f"Cloudflare API error for {url}: {data}")
               return data['result']
           cfg = json.load(open('ops/cloudflare-account-required.json', 'r', encoding='utf-8'))
