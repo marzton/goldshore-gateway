@@ -155,7 +155,7 @@ curl -sf https://armsway.<account>.workers.dev/ | grep -i "armsway"
 
 wrangler deploy --name goldshore-api       # api.goldshore.ai
 wrangler deploy --name goldshore-agent     # agent.goldshore.ai
-wrangler deploy --name goldshore-gateway   # gw.goldshore.ai
+wrangler deploy --name goldshore-gateway   # ops.goldshore.ai
 wrangler deploy --name goldshore-admin     # admin.goldshore.ai
 wrangler deploy --name goldshore-mail      # (internal)
 wrangler deploy --name rmarston-com        # rmarston.com
@@ -171,7 +171,7 @@ wrangler pages deploy --project-name goldshore-web  # goldshore.org
 # For each domain, confirm:
 curl -sI https://goldshore.org | grep -E "HTTP|location|cf-ray"
 curl -sI https://www.goldshore.org | grep -E "HTTP|location"
-curl -sI https://gw.goldshore.ai/health | grep "HTTP"
+curl -sI https://ops.goldshore.ai/health | grep "HTTP"
 curl -sI https://api.goldshore.ai/health | grep "HTTP"
 curl -sI https://admin.goldshore.ai/ | grep "HTTP"
 curl -sI https://rmarston.com/ | grep "HTTP"

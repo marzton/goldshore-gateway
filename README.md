@@ -3,7 +3,7 @@
 ## Repo → Worker → Domain
 | Script | CF Worker | Domain | Status |
 |--------|-----------|--------|--------|
-| `src/index.ts` | `gs-platform` Worker | `gw.goldshore.ai` | ✅ Live |
+| `src/index.ts` | `gs-platform` Worker | `ops.goldshore.ai` | ✅ Live |
 
 ## Cloudflare Account
 - **Account:** Gold Shore Labs (`f77de112d2019e5456a3198a8bb50bd2`)

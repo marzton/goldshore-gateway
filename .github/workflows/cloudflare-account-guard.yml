@@ -27,38 +27,28 @@ jobs:
           import json, os, urllib.request
           def cf_get(url):
               req = urllib.request.Request(url, headers={'Authorization': f"Bearer {os.environ['CLOUDFLARE_API_TOKEN']}", 'Content-Type': 'application/json'})
-              try:
-                  with urllib.request.urlopen(req) as resp:
-                      data = json.loads(resp.read().decode())
-              except Exception as e:
-                  raise SystemExit(f"Request failed for {url}: {e}")
-              if not isinstance(data, dict) or not data.get('success'):
+              with urllib.request.urlopen(req) as resp:
+                  data = json.loads(resp.read().decode())
+              if not data.get('success'):
                   raise SystemExit(f"Cloudflare API error for {url}: {data}")
-              res = data.get('result')
-              if not isinstance(res, list):
-                  raise SystemExit(f"Unexpected result format for {url}: {res}")
-              return res
+              return data['result']
           cfg = json.load(open('ops/cloudflare-account-required.json', 'r', encoding='utf-8'))
           account = os.environ['CLOUDFLARE_ACCOUNT_ID']
-          def get_items(url, key=None):
-              res = cf_get(url)
-              if isinstance(res, dict) and key and key in res:
-                  return res[key]
-              return res
-
-          kv_titles = {ns.get('title') for ns in get_items(f"https://api.cloudflare.com/client/v4/accounts/{account}/storage/kv/namespaces") if isinstance(ns, dict)}
+          kv_titles = {ns.get('title') for ns in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/storage/kv/namespaces")}
           for item in cfg.get('required_kv_namespaces', []):
               if item not in kv_titles:
                   raise SystemExit(f"Missing required KV namespace: {item}")
-          d1_names = {db.get('name') for db in get_items(f"https://api.cloudflare.com/client/v4/accounts/{account}/d1/database") if isinstance(db, dict)}
+          d1_names = {db.get('name') for db in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/d1/database")}
           for item in cfg.get('required_d1_databases', []):
               if item not in d1_names:
                   raise SystemExit(f"Missing required D1 database: {item}")
-          r2_names = {b.get('name') for b in get_items(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets", "buckets") if isinstance(b, dict)}
+          r2_res = cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")
+          r2_buckets = r2_res.get('buckets', []) if isinstance(r2_res, dict) else r2_res
+          r2_names = {b.get('name') for b in r2_buckets if isinstance(b, dict)}
           for item in cfg.get('required_r2_buckets', []):
               if item not in r2_names:
                   raise SystemExit(f"Missing required R2 bucket: {item}")
-          queue_names = {q.get('queue_name') or q.get('name') for q in get_items(f"https://api.cloudflare.com/client/v4/accounts/{account}/queues") if isinstance(q, dict)}
+          queue_names = {q.get('queue_name') or q.get('name') for q in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/queues")}
           for item in cfg.get('required_queues', []):
               if item not in queue_names:
                   raise SystemExit(f"Missing required Queue: {item}")
