@@ -1,0 +1,13 @@
+{
+  "name": "goldshore-control-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test src/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250425.0",
+    "typescript": "^5.8.3"
+  }
+}
