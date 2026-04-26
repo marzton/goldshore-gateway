@@ -10,6 +10,9 @@ router.all("/v1/*", (req, env: Env) => {
   // We decode the pathname to ensure we catch all variations of traversal sequences (e.g. %2e%2e, %2E%2E).
   // We also ensure it still starts with /v1/ after normalization and decoding.
   const path = url.pathname;
+  if (path.includes("..") || path.includes("%2e%2e") || !path.startsWith("/v1/")) {
+    return new Response("Invalid path", { status: 400 });
+  }
 
   let decodedPath = path;
   try {
