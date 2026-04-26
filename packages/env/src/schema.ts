@@ -38,6 +38,7 @@ export const universalEnvironmentSchema = z.object({
   VITE_PUBLIC_BASE_URL: z.string().url(),
   VITE_API_URL: z.string().url(),
   VITE_GATEWAY_URL: z.string().url(),
+  VITE_CONTROL_WORKER_URL: z.string().url(),
   VITE_APP_ENV: z.enum(["development", "staging", "production"]),
   VITE_ASSETS_BASE: z.string(),
 
