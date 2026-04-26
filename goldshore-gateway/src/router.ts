@@ -14,6 +14,23 @@ router.all("/v1/*", (req, env: Env) => {
     return new Response("Invalid path", { status: 400 });
   }
 
+  let decodedPath = path;
+  try {
+    // Recursive decoding to catch nested encodings like %252e%252e
+    while (decodedPath.includes("%")) {
+      const next = decodeURIComponent(decodedPath);
+      if (next === decodedPath) break;
+      decodedPath = next;
+    }
+  } catch (e) {
+    // If decoding fails, we treat it as potentially malicious or malformed
+    return new Response("Invalid path encoding", { status: 400 });
+  }
+
+  if (decodedPath.includes("..") || !path.startsWith("/v1/")) {
+    return new Response("Invalid path", { status: 400 });
+  }
+
   return fetch(`${env.API_BASE}${path}`, {
     method: req.method,
     headers: req.headers,
