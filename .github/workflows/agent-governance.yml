@@ -63,6 +63,7 @@ jobs:
       - name: Validate Forbidden Paths Not Modified
         run: |
           echo "Checking for forbidden path modifications..."
+          git fetch origin main --depth=1
           CHANGED=$(git diff --name-only origin/main...HEAD)
 
           if echo "$CHANGED" | grep -q "\.\./"; then
