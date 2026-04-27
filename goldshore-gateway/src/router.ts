@@ -22,7 +22,6 @@ router.all("/v1/*", (req, env: Env) => {
     return new Response("Invalid path", { status: 400 });
   }
 
-  let decodedPath = path;
   try {
     // Recursive decoding to catch nested encodings like %252e%252e
     while (decodedPath.includes("%")) {
