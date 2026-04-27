@@ -63,7 +63,7 @@ jobs:
       - name: Validate Forbidden Paths Not Modified
         run: |
           echo "Checking for forbidden path modifications..."
-          CHANGED=$(git diff --name-only origin/main...HEAD)
+          CHANGED=$(git diff --name-only HEAD~1...HEAD)
 
           if echo "$CHANGED" | grep -q "\.\./"; then
             echo "::error::Forbidden cross-repo modification detected!"

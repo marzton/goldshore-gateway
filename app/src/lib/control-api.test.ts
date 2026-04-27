@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { getControlWorkerStatus, activateWorkerVersion, updateKvValue } from "./control-api";
+import { getControlWorkerStatus, activateWorkerVersion, updateKvValue } from "./control-api.ts";
 
 // Mocking global fetch
 const originalFetch = globalThis.fetch;
