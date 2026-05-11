@@ -87,3 +87,88 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
     global.fetch = originalFetch;
   }
 });
+
+test("router rejects malformed percent-encoding in /v1/ paths", async () => {
+  const env = { API_BASE: "http://internal-api" } as Env;
+  const malformedPaths = [
+    "bad%",
+    "bad%2",
+    "nested/%",
+    "nested/%2"
+  ];
+
+  for (const path of malformedPaths) {
+    const req = {
+      url: `http://gateway/v1/${path}`,
+      method: "GET",
+      headers: new Headers(),
+      body: null,
+      params: { "*": path }
+    } as any;
+
+    const originalFetch = global.fetch;
+    let fetchCalled = false;
+    global.fetch = (async (url: string) => {
+      fetchCalled = true;
+      return new Response(JSON.stringify({ target: url }));
+    }) as any;
+
+    try {
+      const res = await router.handle(req, env);
+
+      assert.strictEqual(fetchCalled, false, `Malformed encoded path should not be forwarded to fetch: ${path}`);
+      assert.ok(res, `Router should return a response for malformed encoded path: ${path}`);
+
+      if (res.status === 400) {
+        const text = await res.text();
+        assert.strictEqual(text, "Invalid path");
+      } else {
+        assert.strictEqual(
+          res.status,
+          404,
+          `Malformed encoded path should be rejected or not routed safely: ${path}`
+        );
+      }
+    } finally {
+      global.fetch = originalFetch;
+    }
+  }
+});
+
+test("router rejects double-encoded traversal sequences in /v1/ paths", async () => {
+  const env = { API_BASE: "http://internal-api" } as Env;
+  const req = {
+    url: "http://gateway/v1/safe/%252e%252e%252fadmin/secrets",
+    method: "GET",
+    headers: new Headers(),
+    body: null,
+    params: { "*": "safe/%252e%252e%252fadmin/secrets" }
+  } as any;
+
+  const originalFetch = global.fetch;
+  let fetchCalled = false;
+  global.fetch = (async (url: string) => {
+    fetchCalled = true;
+    return new Response(JSON.stringify({ target: url }));
+  }) as any;
+
+  try {
+    const res = await router.handle(req, env);
+
+    assert.strictEqual(fetchCalled, false, "Double-encoded traversal path should not be forwarded to fetch");
+    assert.ok(res, "Router should return a response for double-encoded traversal path");
+
+    if (res.status === 400) {
+      const text = await res.text();
+      assert.strictEqual(text, "Invalid path");
+    } else {
+      assert.strictEqual(
+        res.status,
+        404,
+        "Double-encoded traversal path should be rejected or not routed safely"
+      );
+    }
+  } finally {
+    global.fetch = originalFetch;
+  }
+});
