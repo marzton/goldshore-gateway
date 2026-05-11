@@ -45,7 +45,9 @@
     "wrangler": "4.80.x"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "goldshore-gateway",
+    "goldshore-control-worker"
   ],
   "scripts": {
     "build": "react-router build",
