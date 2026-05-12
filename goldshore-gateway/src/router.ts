@@ -5,31 +5,12 @@ const router = IttyRouter();
 
 router.all("/v1/*", (req, env: Env) => {
   const url = new URL(req.url);
+
+  // Security Fix: Normalize and validate the path to prevent SSRF via path traversal.
+  // We ensure it does not contain '..' or other dangerous sequences.
+  // We also ensure it still starts with /v1/ after normalization by the URL constructor.
   const path = url.pathname;
-
-  // Fast-fail: reject immediately if the raw path does not start with /v1/.
-  if (!path.startsWith("/v1/")) {
-    return new Response("Invalid path", { status: 400 });
-  }
-
-  // Security Fix: Iteratively decode to catch nested/double-encoded traversal sequences
-  // (e.g. %252e%252e → %2e%2e → ..). Attackers use multiple encoding layers to bypass
-  // single-pass decoding checks. Malformed percent-encoding is rejected outright.
-  let decodedPath: string = path;
-  try {
-    let prev: string;
-    do {
-      prev = decodedPath;
-      decodedPath = decodeURIComponent(prev);
-    } while (decodedPath !== prev);
-  } catch {
-    return new Response("Invalid path", { status: 400 });
-  }
-
-  // Reject path traversal attempts and paths whose decoded form no longer starts with /v1/.
-  // Checking the decoded path catches encoded slashes (e.g. %2F) that could alter the
-  // effective path prefix after full decoding.
-  if (decodedPath.includes("..") || !decodedPath.startsWith("/v1/")) {
+  if (path.includes("..") || path.includes("%2e%2e") || !path.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
   }
 

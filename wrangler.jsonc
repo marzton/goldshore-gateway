@@ -2,7 +2,7 @@
 // Serves: gw.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
-  "name": "gs-platform",
+  "name": "goldshore-gateway",
   "main": "goldshore-gateway/src/index.ts",
   "compatibility_date": "2025-03-07",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,7 +14,7 @@
     "ENV": "production",
     "API_ORIGIN": "https://api.goldshore.ai"
   },
-  // Secrets (set via: wrangler secret put <NAME> --name gs-platform)
+  // Secrets (set via: wrangler secret put <NAME> --name goldshore-gateway)
   // CLOUDFLARE_ACCESS_AUDIENCE
   // GATEWAY_AUTH_TOKEN
   "kv_namespaces": [
@@ -53,7 +53,6 @@
     }
   ],
   "routes": [
-    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }
