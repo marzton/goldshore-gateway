@@ -8,7 +8,8 @@ router.all("/v1/*", (req, env: Env) => {
   const path = url.pathname;
 
   // Security Fix: Iteratively decode to catch nested/double-encoded traversal sequences
-  // (e.g. %252e%252e → %2e%2e → ..). Malformed percent-encoding is rejected outright.
+  // (e.g. %252e%252e → %2e%2e → ..). Attackers use multiple encoding layers to bypass
+  // single-pass decoding checks. Malformed percent-encoding is rejected outright.
   let decodedPath: string = path;
   try {
     let prev: string;
@@ -21,7 +22,9 @@ router.all("/v1/*", (req, env: Env) => {
   }
 
   // Reject path traversal attempts and paths that no longer start with /v1/ after decoding.
-  if (decodedPath.includes("..") || !path.startsWith("/v1/")) {
+  // Both the raw and decoded paths must start with /v1/ to guard against encoded slashes
+  // (e.g. %2F) that could alter the effective path prefix after full decoding.
+  if (decodedPath.includes("..") || !path.startsWith("/v1/") || !decodedPath.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
   }
 
