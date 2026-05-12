@@ -20,7 +20,7 @@ test("router processes normal /v1/ paths", async () => {
   }) as any;
 
   try {
-    const res = await router.handle(req, env);
+    const res = await router.fetch(req, env);
     const data = await res.json();
     assert.strictEqual(data.target, "http://internal-api/v1/user/profile");
   } finally {
@@ -48,7 +48,7 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
   try {
     // Manually trigger the vulnerable handler with a manipulated URL
     // since itty-router might not match if we use a non-matching URL string
-    const res = await router.handle(req, env);
+    const res = await router.fetch(req, env);
     const data = await res.json();
 
     // This is just to confirm normal behavior first
@@ -68,7 +68,7 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
         reqVulnerable.params = { "*": match[1] };
     }
 
-    const resVulnerable = await router.handle(reqVulnerable, env);
+    const resVulnerable = await router.fetch(reqVulnerable, env);
 
     if (resVulnerable && resVulnerable.status === 400) {
         // Correctly rejected
@@ -114,7 +114,7 @@ test("router rejects malformed percent-encoding in /v1/ paths", async () => {
     }) as any;
 
     try {
-      const res = await router.handle(req, env);
+      const res = await router.fetch(req, env);
 
       assert.strictEqual(fetchCalled, false, `Malformed encoded path should not be forwarded to fetch: ${path}`);
       assert.ok(res, `Router should return a response for malformed encoded path: ${path}`);
@@ -153,7 +153,7 @@ test("router rejects double-encoded traversal sequences in /v1/ paths", async ()
   }) as any;
 
   try {
-    const res = await router.handle(req, env);
+    const res = await router.fetch(req, env);
 
     assert.strictEqual(fetchCalled, false, "Double-encoded traversal path should not be forwarded to fetch");
     assert.ok(res, "Router should return a response for double-encoded traversal path");

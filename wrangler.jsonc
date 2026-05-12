@@ -14,7 +14,7 @@
     "ENV": "production",
     "API_ORIGIN": "https://api.goldshore.ai"
   },
-  // Secrets (set via: wrangler secret put <NAME> --name goldshore-gateway)
+  // Secrets (set via: wrangler secret put <NAME> --name gs-platform)
   // CLOUDFLARE_ACCESS_AUDIENCE
   // GATEWAY_AUTH_TOKEN
   "kv_namespaces": [
