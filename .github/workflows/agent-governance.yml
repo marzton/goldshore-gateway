@@ -65,7 +65,18 @@ jobs:
       - name: Validate Forbidden Paths Not Modified
         run: |
           echo "Checking for forbidden path modifications..."
-          CHANGED=$(git diff --name-only HEAD~1...HEAD)
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            CHANGED=$(git diff --name-only "$BASE_SHA...HEAD")
+          else
+            if ! git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+              BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+              git fetch --no-tags --depth=2 origin "$BRANCH_NAME"
+            fi
+            CHANGED=$(git diff --name-only HEAD~1...HEAD)
+          fi
 
           if echo "$CHANGED" | grep -q "\.\./"; then
             echo "::error::Forbidden cross-repo modification detected!"
