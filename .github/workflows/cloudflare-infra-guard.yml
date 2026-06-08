@@ -37,7 +37,7 @@ jobs:
           if not zones:
               raise SystemExit(f"Zone not found: {cfg['zone_name']}")
           zone_id = zones[0]['id']
-          route_patterns = [r.get('pattern') for r in cf_get(f"https://api.cloudflare.com/client/v4/zones/{zone_id}/workers/routes")]
+          route_patterns = [r.get('pattern') for r in cf_get(f"https://api.cloudflare.com/client/v4/zones/{zone_id}/workers/routes") if isinstance(r, dict)]
           for pattern in cfg.get('required_routes', []):
               if pattern not in route_patterns:
                   raise SystemExit(f"Missing required worker route: {pattern}")
