@@ -1,8 +1,7 @@
+# Deploy managed by goldshore-ai monorepo. Manual trigger only.
 name: Deploy Worker
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
