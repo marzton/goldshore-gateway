@@ -16,11 +16,11 @@
 # Name: www  →  goldshore.ai
 # Or add a Page Rule: www.goldshore.ai/* → 301 → https://goldshore.ai/$1
 
-## gw.goldshore.ai → goldshore-gateway worker (MISSING — add this)
+## ops.goldshore.ai → goldshore-gateway worker (MISSING — add this)
 # Type: CNAME, Proxied: YES
 # Name: gw  →  goldshore-gateway.<account>.workers.dev
 # Worker route (in Cloudflare Dashboard → Workers → goldshore-gateway → Triggers):
-#   Pattern: gw.goldshore.ai/*   Zone: goldshore.ai
+#   Pattern: ops.goldshore.ai/*   Zone: goldshore.ai
 
 ## api.goldshore.ai → goldshore-api worker
 # Type: CNAME, Proxied: YES
@@ -102,7 +102,7 @@
 # ══════════════════════════════════════════════════════════════
 
 # goldshore-gateway routes:
-#   gw.goldshore.ai/*  (zone: goldshore.ai)
+#   ops.goldshore.ai/*  (zone: goldshore.ai)
 
 # goldshore-api routes:
 #   api.goldshore.ai/*  (zone: goldshore.ai)
@@ -136,7 +136,7 @@
 #   Session duration: 24h recommended
 #   Bypass: /health  (add bypass rule for health check)
 
-# gw.goldshore.ai (internal — service binding used, not CF Access)
+# ops.goldshore.ai (internal — service binding used, not CF Access)
 #   Auth: CLOUDFLARE_ACCESS_AUDIENCE + CF-Access-Jwt-Assertion header
 #   Set CLOUDFLARE_ACCESS_AUDIENCE secret on goldshore-gateway worker
 
@@ -152,7 +152,7 @@
 # IMMEDIATE ACTIONS (in order)
 # ══════════════════════════════════════════════════════════════
 
-# 1. Add DNS CNAME: gw.goldshore.ai → goldshore-gateway worker
+# 1. Add DNS CNAME: ops.goldshore.ai → goldshore-gateway worker
 # 2. Add DNS CNAME: agent.goldshore.ai → goldshore-agent worker
 # 3. Fix api.goldshore.ai worker route (currently 404)
 #    → wrangler deploy --name goldshore-api (with routes in wrangler.jsonc)
