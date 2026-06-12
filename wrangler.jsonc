@@ -2,7 +2,7 @@
 // Serves: gw.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
-  "name": "gs-platform",
+  "name": "goldshore-gateway",
   "main": "goldshore-gateway/src/index.ts",
   "compatibility_date": "2025-03-07",
   "compatibility_flags": ["nodejs_compat"],
