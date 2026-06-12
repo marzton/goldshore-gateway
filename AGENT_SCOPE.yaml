@@ -18,6 +18,7 @@ applies_to_paths:
   - public/**
   - packages/**
   - workers/**
+  - goldshore-control-worker/**
   - terraform/**
   - .github/**
   - AGENT_GLOBAL_RULES.md
@@ -49,6 +50,7 @@ scope:
     - public/**
     - packages/**
     - workers/**
+    - goldshore-control-worker/**
     - terraform/**
     - .github/**
     - AGENT_GLOBAL_RULES.md

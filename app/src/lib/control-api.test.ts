@@ -37,9 +37,9 @@ test("getControlWorkerStatus throws on error", async () => {
 });
 
 test("activateWorkerVersion sends correct request", async () => {
-  let capturedRequest: { url: string; method: string; body: string } | null = null;
+  let capturedRequest: any = null;
   // @ts-ignore - Mocking fetch
-  globalThis.fetch = async (url: string | URL | Request, init?: RequestInit) => {
+  globalThis.fetch = (async (url: any, init: any) => {
     capturedRequest = {
       url: url.toString(),
       method: init?.method || "GET",
@@ -47,14 +47,14 @@ test("activateWorkerVersion sends correct request", async () => {
     };
     return {
       ok: true,
-    } as Response;
-  };
+    } as any;
+  }) as any;
 
   await activateWorkerVersion("my-worker", "v1");
   assert.ok(capturedRequest);
-  assert.strictEqual(capturedRequest!.method, "POST");
-  assert.strictEqual(JSON.parse(capturedRequest!.body).worker, "my-worker");
-  assert.strictEqual(JSON.parse(capturedRequest!.body).version, "v1");
+  assert.strictEqual(capturedRequest.method, "POST");
+  assert.strictEqual(JSON.parse(capturedRequest.body).worker, "my-worker");
+  assert.strictEqual(JSON.parse(capturedRequest.body).version, "v1");
 });
 
 test("activateWorkerVersion throws on error", async () => {
@@ -71,9 +71,9 @@ test("activateWorkerVersion throws on error", async () => {
 });
 
 test("updateKvValue sends correct request", async () => {
-  let capturedRequest: { url: string; method: string; body: string } | null = null;
+  let capturedRequest: any = null;
   // @ts-ignore - Mocking fetch
-  globalThis.fetch = async (url: string | URL | Request, init?: RequestInit) => {
+  globalThis.fetch = (async (url: any, init: any) => {
     capturedRequest = {
       url: url.toString(),
       method: init?.method || "GET",
@@ -81,13 +81,13 @@ test("updateKvValue sends correct request", async () => {
     };
     return {
       ok: true,
-    } as Response;
-  };
+    } as any;
+  }) as any;
 
   await updateKvValue("my-ns", "my-key", "my-value");
   assert.ok(capturedRequest);
-  assert.strictEqual(capturedRequest!.method, "POST");
-  const body = JSON.parse(capturedRequest!.body);
+  assert.strictEqual(capturedRequest.method, "POST");
+  const body = JSON.parse(capturedRequest.body);
   assert.strictEqual(body.namespace, "my-ns");
   assert.strictEqual(body.key, "my-key");
   assert.strictEqual(body.value, "my-value");
