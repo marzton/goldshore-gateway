@@ -2,8 +2,8 @@
 // Serves: gw.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
-  "name": "goldshore-gateway",
-  "main": "src/index.ts",
+  "name": "gs-platform",
+  "main": "goldshore-gateway/src/index.ts",
   "compatibility_date": "2025-03-07",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
@@ -53,6 +53,7 @@
     }
   ],
   "routes": [
-    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }

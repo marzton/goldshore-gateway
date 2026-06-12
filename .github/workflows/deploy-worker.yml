@@ -1,12 +1,7 @@
+# Deploy managed by goldshore-ai monorepo. Manual trigger only.
 name: Deploy Cloudflare Worker
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "goldshore-gateway/**"
-      - "goldshore-gateway/AGENT_SCOPE.yaml"
-      - ".github/workflows/deploy-worker.yml"
   workflow_dispatch:
 
 jobs:
