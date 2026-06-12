@@ -5729,6 +5729,217 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
      */
     contrast?: number;
     /**
+    /**
+     * A request's cache key is what determines if two requests are
+     * "the same" for caching purposes. If a request has the same cache key
+     * as some previous request, then we can serve the same cached response for
+     * both. (e.g. 'some-key')
+     *
+     * Only available for Enterprise customers.
+     */
+    cacheKey?: string;
+    /**
+     * This allows you to append additional Cache-Tag response headers
+     * to the origin response without modifications to the origin server.
+     * This will allow for greater control over the Purge by Cache Tag feature
+     * utilizing changes only in the Workers process.
+     *
+     * Only available for Enterprise customers.
+     */
+    cacheTags?: string[];
+    /**
+     * Force response to be cached for a given number of seconds. (e.g. 300)
+     */
+    cacheTtl?: number;
+    /**
+     * Force response to be cached for a given number of seconds based on the Origin status code.
+     * (e.g. { '200-299': 86400, '404': 1, '500-599': 0 })
+     */
+    cacheTtlByStatus?: Record<string, number>;
+    scrapeShield?: boolean;
+    apps?: boolean;
+    image?: RequestInitCfPropertiesImage;
+    minify?: RequestInitCfPropertiesImageMinify;
+    mirage?: boolean;
+    polish?: "lossy" | "lossless" | "off";
+    r2?: RequestInitCfPropertiesR2;
+    /**
+     * Redirects the request to an alternate origin server. You can use this,
+     * for example, to implement load balancing across several origins.
+     * (e.g.us-east.example.com)
+     *
+     * Note - For security reasons, the hostname set in resolveOverride must
+     * be proxied on the same Cloudflare zone of the incoming request.
+     * Otherwise, the setting is ignored. CNAME hosts are allowed, so to
+     * resolve to a host under a different domain or a DNS only domain first
+     * declare a CNAME record within your own zone’s DNS mapping to the
+     * external hostname, set proxy on Cloudflare, then set resolveOverride
+     * to point to that CNAME record.
+     */
+    resolveOverride?: string;
+}
+interface RequestInitCfPropertiesImageDraw extends BasicImageTransformations {
+    /**
+     * Absolute URL of the image file to use for the drawing. It can be any of
+     * the supported file formats. For drawing of watermarks or non-rectangular
+     * overlays we recommend using PNG or WebP images.
+     */
+    url: string;
+    /**
+     * Floating-point number between 0 (transparent) and 1 (opaque).
+     * For example, opacity: 0.5 makes overlay semitransparent.
+     */
+    opacity?: number;
+    /**
+     * - If set to true, the overlay image will be tiled to cover the entire
+     *   area. This is useful for stock-photo-like watermarks.
+     * - If set to "x", the overlay image will be tiled horizontally only
+     *   (form a line).
+     * - If set to "y", the overlay image will be tiled vertically only
+     *   (form a line).
+     */
+    repeat?: true | "x" | "y";
+    /**
+     * Position of the overlay image relative to a given edge. Each property is
+     * an offset in pixels. 0 aligns exactly to the edge. For example, left: 10
+     * positions left side of the overlay 10 pixels from the left edge of the
+     * image it's drawn over. bottom: 0 aligns bottom of the overlay with bottom
+     * of the background image.
+     *
+     * Setting both left & right, or both top & bottom is an error.
+     *
+     * If no position is specified, the image will be centered.
+     */
+    top?: number;
+    left?: number;
+    bottom?: number;
+    right?: number;
+}
+interface RequestInitCfPropertiesImage extends BasicImageTransformations {
+    /**
+     * Device Pixel Ratio. Default 1. Multiplier for width/height that makes it
+     * easier to specify higher-DPI sizes in <img srcset>.
+     */
+    dpr?: number;
+    /**
+     * Allows you to trim your image. Takes dpr into account and is performed before
+     * resizing or rotation.
+     *
+     * It can be used as:
+     * - left, top, right, bottom - it will specify the number of pixels to cut
+     *   off each side
+     * - width, height - the width/height you'd like to end up with - can be used
+     *   in combination with the properties above
+     * - border - this will automatically trim the surroundings of an image based on
+     *   it's color. It consists of three properties:
+     *    - color: rgb or hex representation of the color you wish to trim (todo: verify the rgba bit)
+     *    - tolerance: difference from color to treat as color
+     *    - keep: the number of pixels of border to keep
+     */
+    trim?: "border" | {
+        top?: number;
+        bottom?: number;
+        left?: number;
+        right?: number;
+        width?: number;
+        height?: number;
+        border?: boolean | {
+            color?: string;
+            tolerance?: number;
+            keep?: number;
+        };
+    };
+    /**
+     * Quality setting from 1-100 (useful values are in 60-90 range). Lower values
+     * make images look worse, but load faster. The default is 85. It applies only
+     * to JPEG and WebP images. It doesn’t have any effect on PNG.
+     */
+    quality?: number | "low" | "medium-low" | "medium-high" | "high";
+    /**
+     * Output format to generate. It can be:
+     *  - avif: generate images in AVIF format.
+     *  - webp: generate images in Google WebP format. Set quality to 100 to get
+     *    the WebP-lossless format.
+     *  - json: instead of generating an image, outputs information about the
+     *    image, in JSON format. The JSON object will contain image size
+     *    (before and after resizing), source image’s MIME type, file size, etc.
+     * - jpeg: generate images in JPEG format.
+     * - png: generate images in PNG format.
+     */
+    format?: "avif" | "webp" | "json" | "jpeg" | "png" | "baseline-jpeg" | "png-force" | "svg";
+    /**
+     * Whether to preserve animation frames from input files. Default is true.
+     * Setting it to false reduces animations to still images. This setting is
+     * recommended when enlarging images or processing arbitrary user content,
+     * because large GIF animations can weigh tens or even hundreds of megabytes.
+     * It is also useful to set anim:false when using format:"json" to get the
+     * response quicker without the number of frames.
+     */
+    anim?: boolean;
+    /**
+     * What EXIF data should be preserved in the output image. Note that EXIF
+     * rotation and embedded color profiles are always applied ("baked in" into
+     * the image), and aren't affected by this option. Note that if the Polish
+     * feature is enabled, all metadata may have been removed already and this
+     * option may have no effect.
+     *  - keep: Preserve most of EXIF metadata, including GPS location if there's
+     *    any.
+     *  - copyright: Only keep the copyright tag, and discard everything else.
+     *    This is the default behavior for JPEG files.
+     *  - none: Discard all invisible EXIF metadata. Currently WebP and PNG
+     *    output formats always discard metadata.
+     */
+    metadata?: "keep" | "copyright" | "none";
+    /**
+     * Strength of sharpening filter to apply to the image. Floating-point
+     * number between 0 (no sharpening, default) and 10 (maximum). 1.0 is a
+     * recommended value for downscaled images.
+     */
+    sharpen?: number;
+    /**
+     * Radius of a blur filter (approximate gaussian). Maximum supported radius
+     * is 250.
+     */
+    blur?: number;
+    /**
+     * Overlays are drawn in the order they appear in the array (last array
+     * entry is the topmost layer).
+     */
+    draw?: RequestInitCfPropertiesImageDraw[];
+    /**
+     * Fetching image from authenticated origin. Setting this property will
+     * pass authentication headers (Authorization, Cookie, etc.) through to
+     * the origin.
+     */
+    "origin-auth"?: "share-publicly";
+    /**
+     * Adds a border around the image. The border is added after resizing. Border
+     * width takes dpr into account, and can be specified either using a single
+     * width property, or individually for each side.
+     */
+    border?: {
+        color: string;
+        width: number;
+    } | {
+        color: string;
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    /**
+     * Increase brightness by a factor. A value of 1.0 equals no change, a value
+     * of 0.5 equals half brightness, and a value of 2.0 equals twice as bright.
+     * 0 is ignored.
+     */
+    brightness?: number;
+    /**
+     * Increase contrast by a factor. A value of 1.0 equals no change, a value of
+     * 0.5 equals low contrast, and a value of 2.0 equals high contrast. 0 is
+     * ignored.
+     */
+    contrast?: number;
+    /**
      * Increase exposure by a factor. A value of 1.0 equals no change, a value of
      * 0.5 darkens the image, and a value of 2.0 lightens the image. 0 is ignored.
      */
@@ -6087,6 +6298,10 @@ interface D1Meta {
      */
     metroCode?: string;
 }
+/** Data about the incoming request's TLS certificate */
+interface IncomingRequestCfPropertiesTLSClientAuth {
+    /** Always `"1"`, indicating that the certificate was presented */
+    certPresented: "1";
 type D1SessionConstraint =
 // Indicates that the first query should go to the primary, and the rest queries
 // using the same D1DatabaseSession will go to any replica that is consistent with
