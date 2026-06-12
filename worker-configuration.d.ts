@@ -6018,7 +6018,61 @@ interface IncomingRequestCfPropertiesGeographicInformation {
      *
      * @example "Texas"
      */
-    region?: string;
+    certNotAfter: string;
+}
+/** Placeholder values for TLS Client Authorization */
+interface IncomingRequestCfPropertiesTLSClientAuthPlaceholder {
+    certPresented: "0";
+    certVerified: "NONE";
+    certRevoked: "0";
+    certIssuerDN: "";
+    certSubjectDN: "";
+    certIssuerDNRFC2253: "";
+    certSubjectDNRFC2253: "";
+    certIssuerDNLegacy: "";
+    certSubjectDNLegacy: "";
+    certSerial: "";
+    certIssuerSerial: "";
+    certSKI: "";
+    certIssuerSKI: "";
+    certFingerprintSHA1: "";
+    certFingerprintSHA256: "";
+    certNotBefore: "";
+    certNotAfter: "";
+}
+/** Possible outcomes of TLS verification */
+declare type CertVerificationStatus =
+/** Authentication succeeded */
+"SUCCESS"
+/** No certificate was presented */
+ | "NONE"
+/** Failed because the certificate was self-signed */
+ | "FAILED:self signed certificate"
+/** Failed because the certificate failed a trust chain check */
+ | "FAILED:unable to verify the first certificate"
+/** Failed because the certificate not yet valid */
+ | "FAILED:certificate is not yet valid"
+/** Failed because the certificate is expired */
+ | "FAILED:certificate has expired"
+/** Failed for another unspecified reason */
+ | "FAILED";
+/**
+ * An upstream endpoint's response to a TCP `keepalive` message from Cloudflare.
+ */
+declare type IncomingRequestCfPropertiesEdgeRequestKeepAliveStatus = 0 /** Unknown */ | 1 /** no keepalives (not found) */ | 2 /** no connection re-use, opening keepalive connection failed */ | 3 /** no connection re-use, keepalive accepted and saved */ | 4 /** connection re-use, refused by the origin server (`TCP FIN`) */ | 5; /** connection re-use, accepted by the origin server */
+/** ISO 3166-1 Alpha-2 codes */
+declare type Iso3166Alpha2Code = "AD" | "AE" | "AF" | "AG" | "AI" | "AL" | "AM" | "AO" | "AQ" | "AR" | "AS" | "AT" | "AU" | "AW" | "AX" | "AZ" | "BA" | "BB" | "BD" | "BE" | "BF" | "BG" | "BH" | "BI" | "BJ" | "BL" | "BM" | "BN" | "BO" | "BQ" | "BR" | "BS" | "BT" | "BV" | "BW" | "BY" | "BZ" | "CA" | "CC" | "CD" | "CF" | "CG" | "CH" | "CI" | "CK" | "CL" | "CM" | "CN" | "CO" | "CR" | "CU" | "CV" | "CW" | "CX" | "CY" | "CZ" | "DE" | "DJ" | "DK" | "DM" | "DO" | "DZ" | "EC" | "EE" | "EG" | "EH" | "ER" | "ES" | "ET" | "FI" | "FJ" | "FK" | "FM" | "FO" | "FR" | "GA" | "GB" | "GD" | "GE" | "GF" | "GG" | "GH" | "GI" | "GL" | "GM" | "GN" | "GP" | "GQ" | "GR" | "GS" | "GT" | "GU" | "GW" | "GY" | "HK" | "HM" | "HN" | "HR" | "HT" | "HU" | "ID" | "IE" | "IL" | "IM" | "IN" | "IO" | "IQ" | "IR" | "IS" | "IT" | "JE" | "JM" | "JO" | "JP" | "KE" | "KG" | "KH" | "KI" | "KM" | "KN" | "KP" | "KR" | "KW" | "KY" | "KZ" | "LA" | "LB" | "LC" | "LI" | "LK" | "LR" | "LS" | "LT" | "LU" | "LV" | "LY" | "MA" | "MC" | "MD" | "ME" | "MF" | "MG" | "MH" | "MK" | "ML" | "MM" | "MN" | "MO" | "MP" | "MQ" | "MR" | "MS" | "MT" | "MU" | "MV" | "MW" | "MX" | "MY" | "MZ" | "NA" | "NC" | "NE" | "NF" | "NG" | "NI" | "NL" | "NO" | "NP" | "NR" | "NU" | "NZ" | "OM" | "PA" | "PE" | "PF" | "PG" | "PH" | "PK" | "PL" | "PM" | "PN" | "PR" | "PS" | "PT" | "PW" | "PY" | "QA" | "RE" | "RO" | "RS" | "RU" | "RW" | "SA" | "SB" | "SC" | "SD" | "SE" | "SG" | "SH" | "SI" | "SJ" | "SK" | "SL" | "SM" | "SN" | "SO" | "SR" | "SS" | "ST" | "SV" | "SX" | "SY" | "SZ" | "TC" | "TD" | "TF" | "TG" | "TH" | "TJ" | "TK" | "TL" | "TM" | "TN" | "TO" | "TR" | "TT" | "TV" | "TW" | "TZ" | "UA" | "UG" | "UM" | "US" | "UY" | "UZ" | "VA" | "VC" | "VE" | "VG" | "VI" | "VN" | "VU" | "WF" | "WS" | "YE" | "YT" | "ZA" | "ZM" | "ZW";
+/** The 2-letter continent codes Cloudflare uses */
+declare type ContinentCode = "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA";
+type CfProperties<HostMetadata = unknown> = IncomingRequestCfProperties<HostMetadata> | RequestInitCfProperties;
+interface D1Meta {
+    duration: number;
+    size_after: number;
+    rows_read: number;
+    rows_written: number;
+    last_row_id: number;
+    changed_db: boolean;
+    changes: number;
     /**
      * If known, the ISO 3166-2 code for the first-level region associated with
      * the IP address of the incoming request
@@ -6037,6 +6091,20 @@ interface IncomingRequestCfPropertiesGeographicInformation {
 interface IncomingRequestCfPropertiesTLSClientAuth {
     /** Always `"1"`, indicating that the certificate was presented */
     certPresented: "1";
+type D1SessionConstraint =
+// Indicates that the first query should go to the primary, and the rest queries
+// using the same D1DatabaseSession will go to any replica that is consistent with
+// the bookmark maintained by the session (returned by the first query).
+"first-primary"
+// Indicates that the first query can go anywhere (primary or replica), and the rest queries
+// using the same D1DatabaseSession will go to any replica that is consistent with
+// the bookmark maintained by the session (returned by the first query).
+ | "first-unconstrained";
+type D1SessionBookmark = string;
+declare abstract class D1Database {
+    prepare(query: string): D1PreparedStatement;
+    batch<T = unknown>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]>;
+    exec(query: string): Promise<D1ExecResult>;
     /**
      * Result of certificate verification.
      *
@@ -6597,6 +6665,105 @@ interface PubSubMessage {
 interface JsonWebKeyWithKid extends JsonWebKey {
     // Key Identifier of the JWK
     readonly kid: string;
+// Namespace for RPC utility types. Unfortunately, we can't use a `module` here as these types need
+// to referenced by `Fetcher`. This is included in the "importable" version of the types which
+// strips all `module` blocks.
+declare namespace Rpc {
+    // Branded types for identifying `WorkerEntrypoint`/`DurableObject`/`Target`s.
+    // TypeScript uses *structural* typing meaning anything with the same shape as type `T` is a `T`.
+    // For the classes exported by `cloudflare:workers` we want *nominal* typing (i.e. we only want to
+    // accept `WorkerEntrypoint` from `cloudflare:workers`, not any other class with the same shape)
+    export const __RPC_STUB_BRAND: '__RPC_STUB_BRAND';
+    export const __RPC_TARGET_BRAND: '__RPC_TARGET_BRAND';
+    export const __WORKER_ENTRYPOINT_BRAND: '__WORKER_ENTRYPOINT_BRAND';
+    export const __DURABLE_OBJECT_BRAND: '__DURABLE_OBJECT_BRAND';
+    export const __WORKFLOW_ENTRYPOINT_BRAND: '__WORKFLOW_ENTRYPOINT_BRAND';
+    export interface RpcTargetBranded {
+        [__RPC_TARGET_BRAND]: never;
+    }
+    export interface WorkerEntrypointBranded {
+        [__WORKER_ENTRYPOINT_BRAND]: never;
+    }
+    export interface DurableObjectBranded {
+        [__DURABLE_OBJECT_BRAND]: never;
+    }
+    export interface WorkflowEntrypointBranded {
+        [__WORKFLOW_ENTRYPOINT_BRAND]: never;
+    }
+    export type EntrypointBranded = WorkerEntrypointBranded | DurableObjectBranded | WorkflowEntrypointBranded;
+    // Types that can be used through `Stub`s
+    export type Stubable = RpcTargetBranded | ((...args: any[]) => any);
+    // Types that can be passed over RPC
+    // The reason for using a generic type here is to build a serializable subset of structured
+    //   cloneable composite types. This allows types defined with the "interface" keyword to pass the
+    //   serializable check as well. Otherwise, only types defined with the "type" keyword would pass.
+    type Serializable<T> =
+    // Structured cloneables
+    BaseType
+    // Structured cloneable composites
+     | Map<T extends Map<infer U, unknown> ? Serializable<U> : never, T extends Map<unknown, infer U> ? Serializable<U> : never> | Set<T extends Set<infer U> ? Serializable<U> : never> | ReadonlyArray<T extends ReadonlyArray<infer U> ? Serializable<U> : never> | {
+        [K in keyof T]: K extends number | string ? Serializable<T[K]> : never;
+    }
+    // Special types
+     | Stub<Stubable>
+    // Serialized as stubs, see `Stubify`
+     | Stubable;
+    // Base type for all RPC stubs, including common memory management methods.
+    // `T` is used as a marker type for unwrapping `Stub`s later.
+    interface StubBase<T extends Stubable> extends Disposable {
+        [__RPC_STUB_BRAND]: T;
+        dup(): this;
+    }
+    export type Stub<T extends Stubable> = Provider<T> & StubBase<T>;
+    // This represents all the types that can be sent as-is over an RPC boundary
+    type BaseType = void | undefined | null | boolean | number | bigint | string | TypedArray | ArrayBuffer | DataView | Date | Error | RegExp | ReadableStream<Uint8Array> | WritableStream<Uint8Array> | Request | Response | Headers;
+    // Recursively rewrite all `Stubable` types with `Stub`s
+    // prettier-ignore
+    type Stubify<T> = T extends Stubable ? Stub<T> : T extends Map<infer K, infer V> ? Map<Stubify<K>, Stubify<V>> : T extends Set<infer V> ? Set<Stubify<V>> : T extends Array<infer V> ? Array<Stubify<V>> : T extends ReadonlyArray<infer V> ? ReadonlyArray<Stubify<V>> : T extends BaseType ? T : T extends {
+        [key: string | number]: any;
+    } ? {
+        [K in keyof T]: Stubify<T[K]>;
+    } : T;
+    // Recursively rewrite all `Stub<T>`s with the corresponding `T`s.
+    // Note we use `StubBase` instead of `Stub` here to avoid circular dependencies:
+    // `Stub` depends on `Provider`, which depends on `Unstubify`, which would depend on `Stub`.
+    // prettier-ignore
+    type Unstubify<T> = T extends StubBase<infer V> ? V : T extends Map<infer K, infer V> ? Map<Unstubify<K>, Unstubify<V>> : T extends Set<infer V> ? Set<Unstubify<V>> : T extends Array<infer V> ? Array<Unstubify<V>> : T extends ReadonlyArray<infer V> ? ReadonlyArray<Unstubify<V>> : T extends BaseType ? T : T extends {
+        [key: string | number]: unknown;
+    } ? {
+        [K in keyof T]: Unstubify<T[K]>;
+    } : T;
+    type UnstubifyAll<A extends any[]> = {
+        [I in keyof A]: Unstubify<A[I]>;
+    };
+    // Utility type for adding `Provider`/`Disposable`s to `object` types only.
+    // Note `unknown & T` is equivalent to `T`.
+    type MaybeProvider<T> = T extends object ? Provider<T> : unknown;
+    type MaybeDisposable<T> = T extends object ? Disposable : unknown;
+    // Type for method return or property on an RPC interface.
+    // - Stubable types are replaced by stubs.
+    // - Serializable types are passed by value, with stubable types replaced by stubs
+    //   and a top-level `Disposer`.
+    // Everything else can't be passed over PRC.
+    // Technically, we use custom thenables here, but they quack like `Promise`s.
+    // Intersecting with `(Maybe)Provider` allows pipelining.
+    // prettier-ignore
+    type Result<R> = R extends Stubable ? Promise<Stub<R>> & Provider<R> : R extends Serializable<R> ? Promise<Stubify<R> & MaybeDisposable<R>> & MaybeProvider<R> : never;
+    // Type for method or property on an RPC interface.
+    // For methods, unwrap `Stub`s in parameters, and rewrite returns to be `Result`s.
+    // Unwrapping `Stub`s allows calling with `Stubable` arguments.
+    // For properties, rewrite types to be `Result`s.
+    // In each case, unwrap `Promise`s.
+    type MethodOrProperty<V> = V extends (...args: infer P) => infer R ? (...args: UnstubifyAll<P>) => Result<Awaited<R>> : Result<Awaited<V>>;
+    // Type for the callable part of an `Provider` if `T` is callable.
+    // This is intersected with methods/properties.
+    type MaybeCallableProvider<T> = T extends (...args: any[]) => any ? MethodOrProperty<T> : unknown;
+    // Base type for all other types providing RPC-like interfaces.
+    // Rewrites all methods/properties to be `MethodOrProperty`s, while preserving callable types.
+    // `Reserved` names (e.g. stub method names like `dup()`) and symbols can't be accessed over RPC.
+    export type Provider<T extends object, Reserved extends string = never> = MaybeCallableProvider<T> & {
+        [K in Exclude<keyof T, Reserved | symbol | keyof StubBase<never>>]: MethodOrProperty<T[K]>;
+    };
 }
 interface RateLimitOptions {
     key: string;
