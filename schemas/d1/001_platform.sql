@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS worker_registry (
 
 -- Seed worker registry
 INSERT OR IGNORE INTO worker_registry (script_name, display_name, domain, status, health_url) VALUES
-  ('goldshore-gateway', 'Gateway',       'gw.goldshore.ai',    'active', 'https://gw.goldshore.ai/health'),
+  ('goldshore-gateway', 'Gateway',       'ops.goldshore.ai',    'active', 'https://ops.goldshore.ai/health'),
   ('goldshore-api',     'API',           'api.goldshore.ai',   'active', 'https://api.goldshore.ai/health'),
   ('goldshore-agent',   'Agent',         'agent.goldshore.ai', 'active', 'https://agent.goldshore.ai/health'),
   ('goldshore-admin',   'Admin',         'admin.goldshore.ai', 'active', NULL),
