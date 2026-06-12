@@ -87,3 +87,18 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
     global.fetch = originalFetch;
   }
 });
+
+test("router rejects malformed percent-encoding with 400", async () => {
+  const env = { API_BASE: "http://internal-api" } as Env;
+  const req = {
+    url: "http://gateway/v1/%",
+    method: "GET",
+    headers: new Headers(),
+    body: null,
+  } as any;
+
+  const res = await router.handle(req, env);
+  assert.ok(res);
+  assert.strictEqual(res.status, 400);
+  assert.strictEqual(await res.text(), "Invalid path");
+});
