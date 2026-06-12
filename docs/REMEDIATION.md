@@ -47,11 +47,11 @@
 #   Domain: api.goldshore.ai
 # OR add route: api.goldshore.ai/* in zone goldshore.ai
 
-## gw.goldshore.ai → gs-platform Worker  
+## ops.goldshore.ai → gs-platform Worker
 # Dashboard: Workers & Pages → gs-platform → Settings → Domains & Routes → Add Custom Domain
-#   Domain: gw.goldshore.ai
+#   Domain: ops.goldshore.ai
 # NOTE: gs-gateway Pages project is pointing at gs-admin.pages.dev — WRONG NAME
-#       gs-platform is the ACTUAL gateway worker. Route gw.goldshore.ai to gs-platform.
+#       gs-platform is the ACTUAL gateway worker. Route ops.goldshore.ai to gs-platform.
 
 ## agent.goldshore.ai → gs-agent Worker
 # Dashboard: Workers & Pages → gs-agent → Settings → Domains & Routes → Add Custom Domain
@@ -148,7 +148,7 @@
 # www.goldshore.ai  → gs-web Pages — LIVE ✓
 # goldshore.org     → goldshore-org Pages (goldshore/goldshore.github.io) — LIVE ✓
 # api.goldshore.ai  → gs-api Worker — NEEDS custom domain added
-# gw.goldshore.ai   → gs-platform Worker — NEEDS custom domain added
+# ops.goldshore.ai   → gs-platform Worker — NEEDS custom domain added
 # admin.goldshore.ai → goldshore-admin Pages (CF Access) — LIVE, fix policy
 # agent.goldshore.ai → gs-agent Worker — NEEDS custom domain added
 # mail.goldshore.ai  → gs-mail Worker — LIVE ✓
