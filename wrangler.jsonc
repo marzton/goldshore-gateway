@@ -53,6 +53,8 @@
     }
   ],
   "routes": [
+    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" }
     { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }
