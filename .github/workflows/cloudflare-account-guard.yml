@@ -45,7 +45,9 @@ jobs:
           for item in cfg.get('required_d1_databases', []):
               if item not in d1_names:
                   raise SystemExit(f"Missing required D1 database: {item}")
-          r2_names = {b.get('name') for b in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")}
+          r2_res = cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")
+          r2_buckets = r2_res.get('buckets', []) if isinstance(r2_res, dict) else r2_res
+          r2_names = {b.get('name') for b in r2_buckets if isinstance(b, dict)}
           for item in cfg.get('required_r2_buckets', []):
               if item not in r2_names:
                   raise SystemExit(f"Missing required R2 bucket: {item}")
