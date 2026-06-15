@@ -34,6 +34,7 @@ applies_to_paths:
   - vite.config.ts
   - worker-configuration.d.ts
   - wrangler.jsonc
+  - CNAME
 
 automation_readers:
   agents:
@@ -66,6 +67,7 @@ scope:
     - vite.config.ts
     - worker-configuration.d.ts
     - wrangler.jsonc
+    - CNAME
   forbidden:
     - goldshore-gateway/**
 
