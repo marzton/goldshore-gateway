@@ -54,7 +54,7 @@ scope:
     - packages/**
     - workers/**
     - goldshore-control-worker/**
-  - goldshore-api/**
+    - goldshore-api/**
     - terraform/**
     - .github/**
     - AGENT_GLOBAL_RULES.md
