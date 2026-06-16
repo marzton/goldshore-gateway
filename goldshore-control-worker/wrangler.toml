@@ -20,5 +20,5 @@ environment = "prod"
 
 [[services]]
 binding = "gateway"
-service = "gs-gateway"
+service = "gs-platform"
 environment = "prod"
