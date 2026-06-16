@@ -35,6 +35,7 @@ applies_to_paths:
   - worker-configuration.d.ts
   - wrangler.jsonc
   - CNAME
+  - ops/**
 
 automation_readers:
   agents:
@@ -68,6 +69,7 @@ scope:
     - worker-configuration.d.ts
     - wrangler.jsonc
     - CNAME
+    - ops/**
   forbidden:
     - goldshore-gateway/**
 
