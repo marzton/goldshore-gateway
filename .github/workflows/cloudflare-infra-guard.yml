@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: cloudflare-production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: test -f ops/cloudflare-required.json
       - name: Verify Cloudflare token is present
         env:
