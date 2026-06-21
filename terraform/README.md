@@ -1,12 +1,14 @@
 # Terraform Setup for Cloudflare Pages
 
-This directory contains the Terraform configuration for the Cloudflare Pages project. The configuration is managed automatically by a GitHub Actions workflow in `.github/workflows/deploy.yml`.
+This directory contains Terraform configuration for Cloudflare Pages resources.
 
-## GitHub Actions Secrets
+## GitHub Actions secrets and environments
 
-For the GitHub Actions workflow to run successfully, you must add the following secrets to your GitHub repository settings:
+Cloudflare deployment credentials are not used by `.github/workflows/deploy.yml` in this repository. Deployments are delegated to `marzton/goldshore-ai` by `repository_dispatch`, and that deployment repository owns the Cloudflare write credentials.
 
-*   `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token.
-*   `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID.
+For guard workflows in this repository, configure the `cloudflare-production` GitHub Environment with these secrets:
 
-These secrets are used by the workflow to authenticate with the Cloudflare API and apply the Terraform configuration.
+* `CLOUDFLARE_API_TOKEN`: a Cloudflare API token with the read-only permissions needed by the guard checks.
+* `CLOUDFLARE_ACCOUNT_ID`: the Cloudflare account ID used by account-level guard checks.
+
+For the full secret matrix, see `docs/CLOUDFLARE_TOKEN_ALIGNMENT.md`.
