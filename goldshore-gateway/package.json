@@ -13,7 +13,7 @@
     "@cloudflare/workers-types": "^4.20250425.0",
     "itty-router": "^5.0.22",
     "jose": "^5.4.0",
-    "typescript": "^5.0.4",
+    "typescript": "^6.0.3",
     "wrangler": "^4.102.0"
   }
 }
