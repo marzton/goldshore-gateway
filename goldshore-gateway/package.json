@@ -11,8 +11,8 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250425.0",
-    "itty-router": "^5.0.24",
-    "jose": "^5.4.0",
+    "itty-router": "^5.0.22",
+    "jose": "^6.2.3",
     "typescript": "^6.0.3",
     "wrangler": "^4.103.0"
   }
