@@ -17,7 +17,7 @@ crons = []
 
 [[kv_namespaces]]
 binding = "STORE"
-id = "xxxx"
+id = "9cc2209906a94851b704be57543987a9" # GOLDSHORE-API KV namespace
 
 [[r2_buckets]]
 binding = "ASSETS"
@@ -26,7 +26,7 @@ bucket_name = "goldshore-assets"
 [[d1_databases]]
 binding = "DB"
 database_name = "goldshore-db"
-database_id = "xxxx"
+database_id = "PENDING" # Run: wrangler d1 create goldshore-db --location enam
 
 [[ai]]
 binding = "AI"
