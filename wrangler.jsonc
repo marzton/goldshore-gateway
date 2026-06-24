@@ -25,7 +25,7 @@
     },
     {
       "binding": "GS_CONFIG",
-      "id": "5f13370575784c9dacff522121104cb3"
+      "id": "68f52b467dc0413991b2195ef9081cae"
     }
   ],
   "d1_databases": [
@@ -64,8 +64,18 @@
       "service": "gs-signals-prod"
     }
   ],
+  "secrets_store": {
+    "bindings": [
+      {
+        "binding": "SECRETS",
+        "store_id": "b9824d3280c54573a24137c7e7143b33"
+      }
+    ]
+  },
   "routes": [
     { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
     { "pattern": "agent.goldshore.ai/*", "zone_name": "goldshore.ai" },
     { "pattern": "api.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
