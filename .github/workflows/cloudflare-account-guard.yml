@@ -8,8 +8,9 @@ on:
 jobs:
   verify-account-resources:
     runs-on: ubuntu-latest
+    environment: cloudflare-production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: test -f ops/cloudflare-account-required.json
       - name: Verify Cloudflare account secrets are present
         env:
@@ -18,6 +19,7 @@ jobs:
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN" && exit 1)
           test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID" && exit 1)
+          test "$CLOUDFLARE_ACCOUNT_ID" = "f77de112d2019e5456a3198a8bb50bd2" || (echo "CLOUDFLARE_ACCOUNT_ID must be Gold Shore Labs account f77de112d2019e5456a3198a8bb50bd2" && exit 1)
       - name: Validate KV, D1, R2, and Queues
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -31,7 +33,10 @@ jobs:
                   data = json.loads(resp.read().decode())
               if not data.get('success'):
                   raise SystemExit(f"Cloudflare API error for {url}: {data}")
-              return data['result']
+              res = data.get('result')
+              if not isinstance(res, (list, dict)):
+                  raise SystemExit(f"Unexpected result format for {url}: {res}")
+              return res
           cfg = json.load(open('ops/cloudflare-account-required.json', 'r', encoding='utf-8'))
           account = os.environ['CLOUDFLARE_ACCOUNT_ID']
           kv_titles = {ns.get('title') for ns in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/storage/kv/namespaces")}
@@ -42,7 +47,9 @@ jobs:
           for item in cfg.get('required_d1_databases', []):
               if item not in d1_names:
                   raise SystemExit(f"Missing required D1 database: {item}")
-          r2_names = {b.get('name') for b in cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")}
+          r2_res = cf_get(f"https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets")
+          r2_buckets = r2_res.get('buckets', []) if isinstance(r2_res, dict) else r2_res
+          r2_names = {b.get('name') for b in r2_buckets if isinstance(b, dict)}
           for item in cfg.get('required_r2_buckets', []):
               if item not in r2_names:
                   raise SystemExit(f"Missing required R2 bucket: {item}")
