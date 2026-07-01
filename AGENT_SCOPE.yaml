@@ -19,6 +19,7 @@ applies_to_paths:
   - packages/**
   - workers/**
   - goldshore-control-worker/**
+  - goldshore-api/**
   - terraform/**
   - .github/**
   - AGENT_GLOBAL_RULES.md
@@ -34,6 +35,8 @@ applies_to_paths:
   - vite.config.ts
   - worker-configuration.d.ts
   - wrangler.jsonc
+  - CNAME
+  - ops/**
 
 automation_readers:
   agents:
@@ -51,6 +54,7 @@ scope:
     - packages/**
     - workers/**
     - goldshore-control-worker/**
+    - goldshore-api/**
     - terraform/**
     - .github/**
     - AGENT_GLOBAL_RULES.md
@@ -66,6 +70,8 @@ scope:
     - vite.config.ts
     - worker-configuration.d.ts
     - wrangler.jsonc
+    - CNAME
+    - ops/**
   forbidden:
     - goldshore-gateway/**
 

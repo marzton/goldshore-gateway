@@ -1,8 +1,8 @@
 // goldshore-gateway — rename target for gs-platform
-// Serves: ops.goldshore.ai
+// Serves: gw.goldshore.ai, agent.goldshore.ai, api.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
-  "name": "goldshore-gateway",
+  "name": "gs-platform",
   "main": "goldshore-gateway/src/index.ts",
   "compatibility_date": "2025-03-07",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,18 +14,18 @@
     "ENV": "production",
     "API_ORIGIN": "https://api.goldshore.ai"
   },
-  // Secrets (set via: wrangler secret put <NAME> --name goldshore-gateway)
+  // Secrets (set via: wrangler secret put <NAME> --name gs-platform)
   // CLOUDFLARE_ACCESS_AUDIENCE
   // GATEWAY_AUTH_TOKEN
   "kv_namespaces": [
     {
       // GATEWAY_KV — audit log storage for integration requests
       "binding": "GATEWAY_KV",
-      "id": "d0b889d0ba314b42892f5b959356ceda"  // KV_SESSIONS reused; create dedicated ns if volume grows
+      "id": "17840f9b6ac64cb1a51aeff085efe24c"
     },
     {
       "binding": "GS_CONFIG",
-      "id": "5f13370575784c9dacff522121104cb3"
+      "id": "68f52b467dc0413991b2195ef9081cae"
     }
   ],
   "d1_databases": [
@@ -44,15 +44,39 @@
     {
       // Service binding to agent — used for agent.goldshore.ai proxy
       "binding": "AGENT",
-      "service": "goldshore-agent"  // update from gs-agent after rename
+      "service": "gs-agent",
+      "environment": "prod"
     },
     {
       // Service binding to API — used for /api/* proxy
-      "binding": "API",
-      "service": "goldshore-api"    // update from gs-api after rename
+      "binding": "API_SERVICE",
+      "service": "gs-api",
+      "environment": "prod"
+    },
+    {
+      // Security / ban check
+      "binding": "SECURITY_CHECK",
+      "service": "banproof-me"
+    },
+    {
+      // Signals worker
+      "binding": "SIGNALS",
+      "service": "gs-signals-prod"
     }
   ],
+  "secrets_store": {
+    "bindings": [
+      {
+        "binding": "SECRETS",
+        "store_id": "b9824d3280c54573a24137c7e7143b33"
+      }
+    ]
+  },
   "routes": [
-    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "agent.goldshore.ai/*", "zone_name": "goldshore.ai" },
+    { "pattern": "api.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }
