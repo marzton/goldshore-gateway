@@ -1,5 +1,5 @@
 // goldshore-gateway — rename target for gs-platform
-// Serves: gw.goldshore.ai, agent.goldshore.ai, api.goldshore.ai
+// Serves: gw.goldshore.ai, gateway.goldshore.ai, ops.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
   "name": "gs-platform",
@@ -75,8 +75,6 @@
   "routes": [
     { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
     { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "agent.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "api.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }
