@@ -31,7 +31,7 @@ function withCorrelationHeaders(headers: HeadersInit, correlationId: string): He
   return enrichedHeaders;
 }
 
-function logAgentFailure(
+function logApiFailure(
   requestId: string,
   pathname: string,
   failureType: UpstreamFailureType,
@@ -39,7 +39,7 @@ function logAgentFailure(
 ): void {
   console.error(
     JSON.stringify({
-      event: "agent_fetch_failure",
+      event: "api_fetch_failure",
       requestId,
       pathname,
       failureType,
@@ -48,7 +48,7 @@ function logAgentFailure(
   );
 }
 
-function classifyAgentException(error: unknown): {
+function classifyApiException(error: unknown): {
   failureType: Exclude<UpstreamFailureType, "upstream-error-response">;
   reason: string;
 } {
@@ -116,7 +116,7 @@ export default {
       );
     }
 
-    // 2. API Routing (Forward to gs-api / AGENT)
+    // 2. API Routing (Forward to gs-api / API_SERVICE)
     // Internal Service Bindings bypass public network latency
     if (url.pathname.startsWith("/api/")) {
       const requestId = getCorrelationId(request);
@@ -142,10 +142,10 @@ export default {
 
       try {
         // Zero-latency internal hop
-        const apiResponse = await env.AGENT.fetch(upstreamRequest);
+        const apiResponse = await env.API_SERVICE.fetch(upstreamRequest);
 
         if (apiResponse.status >= 500) {
-          logAgentFailure(requestId, url.pathname, "upstream-error-response", {
+          logApiFailure(requestId, url.pathname, "upstream-error-response", {
             upstreamStatus: apiResponse.status,
             upstreamStatusText: apiResponse.statusText,
           });
@@ -166,8 +166,8 @@ export default {
           ),
         });
       } catch (error) {
-        const { failureType, reason } = classifyAgentException(error);
-        logAgentFailure(requestId, url.pathname, failureType, {
+        const { failureType, reason } = classifyApiException(error);
+        logApiFailure(requestId, url.pathname, failureType, {
           reason,
           method: request.method,
         });
@@ -189,7 +189,7 @@ export default {
 
     // 4. Router Fallback
     // For anything not handled above, try itty-router
-    const response = await router.handle(request, env);
+    const response = await router.fetch(request, env);
     if (response) {
       const headers = {
         ...Object.fromEntries(response.headers),

@@ -1,5 +1,5 @@
 // goldshore-gateway — rename target for gs-platform
-// Serves: gw.goldshore.ai, agent.goldshore.ai, api.goldshore.ai
+// Serves: gw.goldshore.ai, gateway.goldshore.ai, ops.goldshore.ai
 // Current script name: gs-platform (deploy with new name after staging verification)
 {
   "name": "gs-platform",
@@ -11,11 +11,14 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "ENV": "production",
-    "API_ORIGIN": "https://api.goldshore.ai"
+    "ENVIRONMENT": "production",
+    "API_BASE": "https://api.goldshore.ai",
+    "CORS_ALLOWED": "[\"https://goldshore.ai\",\"https://www.goldshore.ai\",\"https://gw.goldshore.ai\",\"https://gateway.goldshore.ai\",\"https://ops.goldshore.ai\"]",
+    "CF_ACCESS_ISS": "https://goldshore.cloudflareaccess.com",
+    "CF_ACCESS_JWKS_URL": "https://goldshore.cloudflareaccess.com/cdn-cgi/access/certs"
   },
   // Secrets (set via: wrangler secret put <NAME> --name gs-platform)
-  // CLOUDFLARE_ACCESS_AUDIENCE
+  // CF_ACCESS_AUD
   // GATEWAY_AUTH_TOKEN
   "kv_namespaces": [
     {
@@ -75,8 +78,6 @@
   "routes": [
     { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
     { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "agent.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "api.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }
