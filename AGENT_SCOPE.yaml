@@ -26,6 +26,7 @@ applies_to_paths:
   - AGENT_GLOBAL_RULES.md
   - AGENT_SCOPE.yaml
   - AI_AGENT_CONFIG.yaml
+  - CLAUDE.md
   - README.md
   - package.json
   - package-lock.json
@@ -62,6 +63,7 @@ scope:
     - AGENT_GLOBAL_RULES.md
     - AGENT_SCOPE.yaml
     - AI_AGENT_CONFIG.yaml
+    - CLAUDE.md
     - README.md
     - package.json
     - package-lock.json
