@@ -14,6 +14,7 @@ domain: https://admin.goldshore.org
 cloudflare_project: goldshore-admin
 
 applies_to_paths:
+  - .claude/**
   - app/**
   - public/**
   - packages/**
@@ -25,6 +26,7 @@ applies_to_paths:
   - AGENT_GLOBAL_RULES.md
   - AGENT_SCOPE.yaml
   - AI_AGENT_CONFIG.yaml
+  - CLAUDE.md
   - README.md
   - package.json
   - package-lock.json
@@ -49,6 +51,7 @@ automation_readers:
 
 scope:
   allowed:
+    - .claude/**
     - app/**
     - public/**
     - packages/**
@@ -60,6 +63,7 @@ scope:
     - AGENT_GLOBAL_RULES.md
     - AGENT_SCOPE.yaml
     - AI_AGENT_CONFIG.yaml
+    - CLAUDE.md
     - README.md
     - package.json
     - package-lock.json
