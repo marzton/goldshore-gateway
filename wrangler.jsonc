@@ -22,7 +22,14 @@
   // Secrets (set via: wrangler secret put <NAME> --name gs-platform)
   // CF_ACCESS_AUD
   // AIPROXYSIGNING_KEY
+  // CLOUDFLARE_ACCESS_AUDIENCE
+  // GATEWAY_AUTH_TOKEN
   "kv_namespaces": [
+    {
+      // GATEWAY_KV — audit log storage for integration requests
+      "binding": "GATEWAY_KV",
+      "id": "17840f9b6ac64cb1a51aeff085efe24c"
+    },
     {
       "binding": "GS_CONFIG",
       "id": "5f13370575784c9dacff522121104cb3"
@@ -61,7 +68,6 @@
   },
   "routes": [
     { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" },
-    { "pattern": "ops.goldshore.ai/*", "zone_name": "goldshore.ai" }
+    { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
 }

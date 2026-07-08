@@ -5,13 +5,7 @@ import type { Env } from "./env.ts";
 
 test("router processes normal /v1/ paths", async () => {
   const env = { API_BASE: "http://internal-api" } as Env;
-  const req = {
-    url: "http://gateway/v1/user/profile",
-    method: "GET",
-    headers: new Headers(),
-    body: null,
-    params: { "*": "user/profile" }
-  } as any;
+  const req = new Request("http://gateway/v1/user/profile");
 
   // Mock global fetch
   const originalFetch = global.fetch;
@@ -20,7 +14,7 @@ test("router processes normal /v1/ paths", async () => {
   }) as any;
 
   try {
-    const res = await router.handle(req, env);
+    const res = await router.fetch(req, env);
     const data = await res.json();
     assert.strictEqual(data.target, "http://internal-api/v1/user/profile");
   } finally {
@@ -31,13 +25,7 @@ test("router processes normal /v1/ paths", async () => {
 test("router handles traversal sequences in path (Reproduction of SSRF)", async () => {
   const env = { API_BASE: "http://internal-api" } as Env;
 
-  const req = {
-    url: "http://gateway/v1/test",
-    method: "GET",
-    headers: new Headers(),
-    body: null,
-    params: { "*": "test" }
-  } as any;
+  const req = new Request("http://gateway/v1/test");
 
   // Mock global fetch
   const originalFetch = global.fetch;
@@ -48,27 +36,16 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
   try {
     // Manually trigger the vulnerable handler with a manipulated URL
     // since itty-router might not match if we use a non-matching URL string
-    const res = await router.handle(req, env);
+    const res = await router.fetch(req, env);
     const data = await res.json();
 
     // This is just to confirm normal behavior first
     assert.strictEqual(data.target, "http://internal-api/v1/test");
 
     // Now test with traversal in req.url
-    const reqVulnerable = {
-        url: "http://gateway/v1/test/..%2f..%2fadmin/secrets",
-        method: "GET",
-        headers: new Headers(),
-        body: null
-    } as any;
+    const reqVulnerable = new Request("http://gateway/v1/test/..%2f..%2fadmin/secrets");
 
-    // Our itty-router mock needs to populate params
-    const match = reqVulnerable.url.match(/\/v1\/(.*)/);
-    if (match) {
-        reqVulnerable.params = { "*": match[1] };
-    }
-
-    const resVulnerable = await router.handle(reqVulnerable, env);
+    const resVulnerable = await router.fetch(reqVulnerable, env);
 
     if (resVulnerable && resVulnerable.status === 400) {
         // Correctly rejected
@@ -90,15 +67,30 @@ test("router handles traversal sequences in path (Reproduction of SSRF)", async 
 
 test("router rejects malformed percent-encoding with 400", async () => {
   const env = { API_BASE: "http://internal-api" } as Env;
-  const req = {
-    url: "http://gateway/v1/%",
-    method: "GET",
-    headers: new Headers(),
-    body: null,
-  } as any;
+  const req = new Request("http://gateway/v1/%");
 
-  const res = await router.handle(req, env);
+  const res = await router.fetch(req, env);
   assert.ok(res);
   assert.strictEqual(res.status, 400);
   assert.strictEqual(await res.text(), "Invalid path");
+});
+
+
+test("router rejects double-encoded traversal sequences with 400", async () => {
+  const env = { API_BASE: "http://internal-api" } as Env;
+  const req = new Request("http://gateway/v1/%252e%252e/%252e%252e/admin");
+
+  const originalFetch = global.fetch;
+  global.fetch = (async () => {
+    throw new Error("fetch should not be called for invalid traversal paths");
+  }) as any;
+
+  try {
+    const res = await router.fetch(req, env);
+    assert.ok(res);
+    assert.strictEqual(res.status, 400);
+    assert.strictEqual(await res.text(), "Invalid path");
+  } finally {
+    global.fetch = originalFetch;
+  }
 });
