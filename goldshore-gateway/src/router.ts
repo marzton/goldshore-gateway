@@ -28,7 +28,16 @@ router.all("/v1/*", (req, env: Env) => {
   // nested-encoded traversal sequences like %252e%252e becoming ../ after an
   // additional upstream decode layer.
   const path = url.pathname;
-  const decodedPath = recursivelyDecodePath(path);
+  if (path.includes("..") || path.includes("%2e%2e") || !path.startsWith("/v1/")) {
+    return new Response("Invalid path", { status: 400 });
+  }
+
+  let decodedPath = path;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    return new Response("Invalid path", { status: 400 });
+  }
 
   if (!decodedPath || path.includes("..") || decodedPath.includes("..") || !path.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
