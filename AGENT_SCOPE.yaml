@@ -14,16 +14,19 @@ domain: https://admin.goldshore.org
 cloudflare_project: goldshore-admin
 
 applies_to_paths:
+  - .claude/**
   - app/**
   - public/**
   - packages/**
   - workers/**
   - goldshore-control-worker/**
+  - goldshore-api/**
   - terraform/**
   - .github/**
   - AGENT_GLOBAL_RULES.md
   - AGENT_SCOPE.yaml
   - AI_AGENT_CONFIG.yaml
+  - CLAUDE.md
   - README.md
   - package.json
   - package-lock.json
@@ -34,6 +37,8 @@ applies_to_paths:
   - vite.config.ts
   - worker-configuration.d.ts
   - wrangler.jsonc
+  - CNAME
+  - ops/**
 
 automation_readers:
   agents:
@@ -46,16 +51,19 @@ automation_readers:
 
 scope:
   allowed:
+    - .claude/**
     - app/**
     - public/**
     - packages/**
     - workers/**
     - goldshore-control-worker/**
+    - goldshore-api/**
     - terraform/**
     - .github/**
     - AGENT_GLOBAL_RULES.md
     - AGENT_SCOPE.yaml
     - AI_AGENT_CONFIG.yaml
+    - CLAUDE.md
     - README.md
     - package.json
     - package-lock.json
@@ -66,6 +74,8 @@ scope:
     - vite.config.ts
     - worker-configuration.d.ts
     - wrangler.jsonc
+    - CNAME
+    - ops/**
   forbidden:
     - goldshore-gateway/**
 

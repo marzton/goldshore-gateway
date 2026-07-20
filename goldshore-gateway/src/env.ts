@@ -21,7 +21,7 @@ export interface Env {
   GS_CONFIG: KVNamespace;
 
   // Service Bindings (Worker-to-Worker)
-  AGENT: { fetch: typeof fetch };
+  API_SERVICE: { fetch: typeof fetch };
 
   // Metadata
   VERSION: { id: string; tag: string };

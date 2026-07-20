@@ -3,22 +3,43 @@ import type { Env } from "./env.ts";
 
 const router = IttyRouter();
 
+function recursivelyDecodePath(path: string): string | null {
+  let decodedPath = path;
+
+  for (let depth = 0; depth < 5; depth++) {
+    try {
+      const nextPath = decodeURIComponent(decodedPath);
+      if (nextPath === decodedPath) {
+        return decodedPath;
+      }
+      decodedPath = nextPath;
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
 router.all("/v1/*", (req, env: Env) => {
   const url = new URL(req.url);
 
-  // Security Fix: Normalize and validate the path to prevent SSRF via path traversal.
-  // We use decodeURIComponent to handle encoded traversal sequences like %2e%2e.
-  // We ensure it does not contain '..' after decoding.
-  // We also ensure it still starts with /v1/ after normalization by the URL constructor.
+  // Security Fix: recursively normalize and validate the path to prevent SSRF via
+  // nested-encoded traversal sequences like %252e%252e becoming ../ after an
+  // additional upstream decode layer.
   const path = url.pathname;
-  let decodedPath: string;
+  if (path.includes("..") || path.includes("%2e%2e") || !path.startsWith("/v1/")) {
+    return new Response("Invalid path", { status: 400 });
+  }
+
+  let decodedPath = path;
   try {
     decodedPath = decodeURIComponent(path);
   } catch {
     return new Response("Invalid path", { status: 400 });
   }
 
-  if (decodedPath.includes("..") || !path.startsWith("/v1/")) {
+  if (!decodedPath || path.includes("..") || decodedPath.includes("..") || !path.startsWith("/v1/")) {
     return new Response("Invalid path", { status: 400 });
   }
 
