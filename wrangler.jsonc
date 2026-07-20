@@ -1,7 +1,7 @@
 // goldshore-gateway — gs-platform deployment
 // Serves gateway hostnames only; api.goldshore.ai and agent.goldshore.ai are routed to their dedicated workers.
 {
-  "name": "gs-platform",
+  "name": "gs-gateway",
   "main": "goldshore-gateway/src/index.ts",
   "compatibility_date": "2026-03-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -67,6 +67,8 @@
     "binding": "VERSION"
   },
   "routes": [
+    // Gateway-only hostnames. Do not add api.goldshore.ai or agent.goldshore.ai here;
+    // those hostnames belong to the dedicated gs-api and gs-agent workers.
     { "pattern": "gw.goldshore.ai/*", "zone_name": "goldshore.ai" },
     { "pattern": "gateway.goldshore.ai/*", "zone_name": "goldshore.ai" }
   ]
