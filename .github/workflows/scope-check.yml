@@ -7,14 +7,14 @@ jobs:
   scope:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Validate changed paths against the applicable scope file
         run: |
           git fetch origin main --depth=1
-          mapfile -t CHANGED < <(git diff --name-only origin/main...HEAD)
+          mapfile -t CHANGED < <(git diff --name-only HEAD~1...HEAD)
 
           ROOT_PATHS=()
           GATEWAY_PATHS=()

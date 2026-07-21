@@ -20,8 +20,8 @@ resource "cloudflare_pages_project" "goldshore_web" {
   deployment_configs {
     production {
       environment_variables = {
-        VITE_PUBLIC_API    = "https://api.goldshore.org"
-        VITE_PUBLIC_GATEWAY = "https://gateway.goldshore.org"
+        VITE_PUBLIC_API    = "https://api.goldshore.ai"
+        VITE_PUBLIC_GATEWAY = "https://gw.goldshore.ai"
         VITE_APP_ENV       = "production"
       }
     }

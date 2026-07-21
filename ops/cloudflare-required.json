@@ -2,11 +2,13 @@
   "zone_name": "goldshore.ai",
   "required_dns": [
     "gw.goldshore.ai",
-    "gateway.goldshore.ai"
+    "agent.goldshore.ai",
+    "api.goldshore.ai"
   ],
   "required_routes": [
     "gw.goldshore.ai/*",
-    "gateway.goldshore.ai/*"
+    "agent.goldshore.ai/*",
+    "api.goldshore.ai/*"
   ],
   "forbidden_routes": [
     "goldshore.ai/*",
