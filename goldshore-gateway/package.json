@@ -10,7 +10,7 @@
     "test": "node --experimental-strip-types --test src/**/*.test.ts"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260719.1",
+    "@cloudflare/workers-types": "^5.20260731.1",
     "itty-router": "^5.0.22",
     "jose": "^6.2.3",
     "typescript": "^7.0.2",
